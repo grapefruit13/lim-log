@@ -1,0 +1,328 @@
+---
+title: '(리팩터링 2판) ch04. 테스트 구축하기'
+description: '직접 테스트 코드를 작성해보자'
+categories: ['리팩터링', 'TDD', '테스트코드', 'test']
+thumbnail: "https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775384274.avif"
+createdAt: 2024-05-16
+minsToRead: 15
+---
+
+## 💎 자가 테스트 코드의 가치
+
+> 모든 테스트를 완전히 자동화하고 그 결과까지 스스로 검사하게 만들자
+> 
+
+> 테스트 스위트(test suite)는 강력한 버그 검출 도구로, 버그를 찾는데 걸리는 시간을 대폭 줄여준다
+> 
+
+### 회귀 버그 regresstion bug
+
+잘 작동하던 기능에서 문제가 생기는 현상으로, 일반적으로 프로그램을 변경하다가 뜻하지 않게 발생한다.
+
+### 회귀 테스트 regresstion test
+
+잘 작동하던 기능이 여전히 잘 작동하는 지 확인하는 테스트
+
+### ⌛ 테스트를 작성하기 좋은 시점?
+
+- 프로그래밍을 시작하기 전!
+
+#### 프로그래밍 시작 전에 테스트를 작성했을 때의 장점
+
+1. 원하는 기능을 추가하기 위해 무엇이 필요한 지 고민하게 된다.
+2. `구현`보다 `인터페이스`에 집중하게 된다
+3. 코딩이 완료되는 시점을 정확하게 판단할 수 있다 
+  → 코드 완성 시점 = 테스트를 모두 통과한 시점
+
+### 🧪 TDD 테스트 주도 개발
+
+`테스트-코딩-리팩터링` 과정을  짧은 주기로 반복하며 개발하는 것
+
+1. 통과하지 못할 테스트 작성
+2. 테스트를 통과하게끔 코드 작성
+3. 결과 코드를 깔끔하게 리팩터링
+
+---
+
+## 🧑🏻‍🏭 테스트 환경 세팅
+
+책에서는 [mocha](https://mochajs.org/)와 [chai](https://www.chaijs.com/)를 통해 실습하기에 아래처럼 테스트 환경을 세팅했다.
+
+
+#### package.json
+
+```json
+{
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.4.0"
+  },
+  "type": "module"
+}
+```
+
+#### 폴더 트리
+
+```json
+src
+|-logic.js
+test
+|-logic.test.js
+```
+
+---
+
+## 👨🏻‍💻 샘플 코드
+샘플 코드 `src/logic.js`의 코드들이다.
+
+#### 1️⃣ Province 클래스
+
+```jsx
+// src/logic.js
+export class Province {
+  // 생성자 함수
+  constructor(doc) {
+    this._name = doc.name;
+    this._producers = [];
+    this._totalProduction = 0;
+    this._demand = doc.demand;
+    this._price = doc.price;
+    doc.producers.forEach((d) => this.addProducer(new Producer(this, d)));
+  }
+
+  // 생산자 추가 함수
+  addProducer(arg) {
+    // producer 배열에 아규먼트 추가
+    this._producers.push(arg);
+    // 아규먼트 production을 totalProduction에 합산
+    this._totalProduction += arg.production;
+  }
+
+  // getter와 setter 함수들
+  get name() {
+    return this._name;
+  }
+
+  get producers() {
+    return this._producers;
+  }
+  
+  get totalProduction() {
+    return this._totalProduction;
+  }
+  
+  set totalProduction(arg) {
+    this._totalProduction = arg;
+  }
+  
+  get demand() {
+    return this._demand;
+  }
+  
+  set demand(arg) {
+    // UI에서 입력받은 문자열을 숫자로 파싱
+    this._demand = parseInt(arg);
+  }
+  
+  get price() {
+    return this._price;
+  }
+  
+  set price(arg) {
+    // UI에서 입력받은 문자열을 숫자로 파싱
+    this._price = parseInt(arg);
+  }
+
+  // 생산 부족분 계산
+  get shortfall() {
+    // 수요 - 총 생산량 = 생산 부족분
+    return this._demand - this.totalProduction;
+  }
+
+  // 수익 계산
+  get profit() {
+    // 수요가치 - 수요비용 = 수익
+    return this.demandValue - this.demandCost;
+  }
+
+  // 수요 가치
+  get demandValue() {
+    // 충족 수요 * 가격
+    return this.satisfiedDemand * this.price;
+  }
+
+  // 충족 수요
+  get satisfiedDemand() {
+    // 수요와 총 생산량 중 작은 값
+    return Math.min(this._demand, this.totalProduction);
+  }
+
+  // 수요 비용 계산
+  get demandCost() {
+    // 수요를 남아있는 수요에 할당
+    let remainingDemand = this.demand;
+    // 결과 변수 선언
+    let result = 0;
+    this.producers
+      // 생산자 배열의 요소를 가격 낮은 순으로 정렬
+      .sort((a, b) => a.cost - b.cost)
+      // 남아있는 수요와 생산량 중 작은 값을 기여에 할당
+      .forEach((p) => {
+        const contribution = Math.min(remainingDemand, p.production);
+        // 남아있는 수요에서 기여분만큼 차감
+        remainingDemand -= contribution;
+        // 수요 비용 = (기여 * 가격)의 총합산
+        result += contribution * p.cost;
+      });
+    return result;
+  }
+}
+```
+
+#### 2️⃣ sampleProvinceData 함수
+
+```jsx
+export function sampleProvinceData() {
+  return {
+    name: "asia",
+    producers: [
+      { name: "Byzantium", cost: 10, production: 9 },
+      { name: "Attalia", cost: 12, production: 10 },
+      { name: "Sinope", cost: 10, production: 6 },
+    ],
+    demand: 30,
+    price: 20,
+  };
+}
+```
+
+#### 3️⃣ Producer 클래스
+
+```jsx
+export class Producer {
+  // 생성자 함수
+  constructor(aProvince, data) {
+    this._province = aProvince;
+    this._cost = data.cost;
+    this._name = data.name;
+    // 생산량이 있으면 생산량을 넣고 아닐 경우에는 0을 할당
+    this._production = data.production || 0;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  get cost() {
+    return this._cost;
+  }
+  
+  set cost(arg) {
+    // UI에서 입력받은 문자열을 숫자로 파싱
+    this._cost = parseInt(arg);
+  }
+
+  get production() {
+    return this._production;
+  }
+
+  set production(amoutStr) {
+    const amount = parseInt(amoutStr);
+    const newProduction = Number.isNaN(amount) ? 0 : amount;
+    this._province.totalProduction += newProduction - this._production;
+    this._production = newProduction;
+  }
+}
+
+```
+---
+
+## 🧪 테스트 코드 작성 `test/logic.test.ts`
+
+### 1️⃣ 생산 부족분 계산 로직 테스트
+
+```jsx
+import { assert } from "chai";
+import { Province, sampleProvinceData } from "../src/logic.js";
+
+describe("생산 부족 계산 로직 테스트", function () {
+  it("shortfall", function () {
+    // 1. 픽스처 설정 : 테스트에 필요한 데이터와 객체인 픽스쳐 fixture 설정
+    const asia = new Province(sampleProvinceData());
+    // 2. 검증 : 주어진 초깃값에 기초하여 생산 부족분을 계산했는 지 검증
+    assert.equal(asia.shortfall, 5);
+  });
+});
+```
+
+### 2️⃣ 총 수익 계산 로직 테스트
+
+```jsx
+// ...
+
+describe("총 수익 계산 로직 테스트", function () {
+  it("profit", function () {
+    const asia = new Province(sampleProvinceData());
+    expect(asia.profit).equal(230);
+  });
+});
+```
+
+- 테스트 코드를 살펴보면, `픽스처`를 설정하는 부분에서 `코드 중복`이 있다.
+> 일반 코드와 마찬가지로 테스트 코드에서도 중복은 의심해보아야 한다.
+>
+
+### 💀 잘못된 예시
+
+```jsx
+describe("province", function () {
+  const asia = new Province(sampleProvinceData()); // <- 잘못된 부분
+
+  it("shortfall", function () {
+    assert.equal(asia.shortfall, 5);
+  });
+
+  it("profit", function () {
+    expect(asia.profit).equal(230);
+  });
+});
+```
+
+#### ❔ 이유는?
+
+- 테스트끼리 상호작용하게 하는 **공유 픽스처**를 생성하게 되어, 버그가 발생할 수 있다.
+- 자바스크립트에서 `const` 키워드는 `asia 객체의 내용`이 아니라 `asia를 가리키는 참조`가 상수임을 뜻한다. 나중에 다른 테스트에서 이 공유 객체의 값을 수정하면 이 픽스처를 사용하는 또 다른 테스트가 실패할 수 있다. 
+→ 테스트를 실행하는 순서에 따라 결과가 달라질 수 있다.
+
+### 😇 좋은 예시
+
+```jsx
+import { beforeEach } from "mocha";
+import { Province, sampleProvinceData } from "../src/logic";
+
+describe("province", function () {
+  let asia = new Province(sampleProvinceData());
+  beforeEach(function () {
+    asia = new Province(sampleProvinceData());
+  });
+
+  it("shortfall", function () {
+    assert.equal(asia.shortfall, 5);
+  });
+
+  it("profit", function () {
+    expect(asia.profit).equal(230);
+  });
+});
+```
+
+- `beforeEach` 는 각각의 테스트 바로 전에 실행되어 asia를 초기화한다.
+- 개별 테스트를 실행할 때마다 픽스처를 새로 만들면 모든 테스트를 독립적으로 구성할 수 있다.
+
+### 🌟 `it` 블록에서 픽스처를 생성하는 것과 `beforeEach`를 사용하는 것의 차이점
+
+- 후자는 테스트들이 모두 똑같은 픽스처에 기초하여 검증을 수행하는 것을 보장한다.
+→ 즉, `표준 픽스처` 사용을 보장한다.

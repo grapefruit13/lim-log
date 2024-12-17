@@ -1,0 +1,218 @@
+---
+title: 'zod와 react hook form으로 사용자의 입력값 유효성 검사하기'
+description: '함께 쓰면 최고의 조합인 zod와 hook form'
+categories: ['zod', 'react-hook-form', 'validation']
+thumbnail: "https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775428547.avif"
+createdAt: 2024-03-09
+minsToRead: 15
+---
+
+## 들어가며
+
+<a href='https://github.com/sprint-team3/GGF'>GGF 프로젝트</a>에서는 `react hook form`과 `zod`를 함께 사용해 유저의 입력값 유효성 검사를 진행했었습니다.
+
+`react hook form`과 `zod`가 무엇이고, 이것들을 구체적으로 어떻게 사용했으며, 그 과정에서 느낀 점들은 무엇인지를 기록해보려 합니다.
+
+---
+
+## ❔  react hook form
+`react hook form`은 사용하기 쉬운 유효성 검사를 통해 성능이 우수하고 유연하며 확장 가능한 양식을 제공하는 라이브러리로, **비제어 컴포넌트 방식**으로 구현되어있다는 것이 특징입니다. 
+
+### 비제어 컴포넌트 Uncontrolled Components
+`비제어 컴포넌트`는 `제어 컴포넌트(Controlled Component)`에서 `state`를 사용해 `form`의 값을 가져오는 것과 다르게, `ref`를 사용해서 `DOM`에서 직접 `form` 값을 가져옵니다. 
+사용자가 `form`을 `submit`하기 전까지는 리렌더링을 발생시키지 않고 값을 동기화하지 않습니다.
+
+이 덕분에 불필요한 리렌더링이 발생하지 않습니다.
+
+### 장점
+```tsx
+1. `formProvider`를 사용해 `props drilling` 없이 `form`의 상태 공유가 가능하다.
+2. native form validation을 제공한다.
+3. 용량이 작고 dependency가 없다.
+4. form validation을 위한 표준 HTML을 기반으로 만들어졌다.
+5. Yub, Zod 혹은 커스텀 validation과 함께 쓸 수 있다.
+6. devTools를 제공한다.
+```
+
+### 예시
+로그인 페이지를 만든다고 가정해보겠습니다. 
+<img src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720581423390.png' alt='ggf login page'/>
+<a href='https://good-game-friends.vercel.app/signin'>출처: GGF 로그인 페이지</a>
+
+UI는 위처럼 아이디와 비밀번호를 입력받는 `input`과 이 `input`들이 포함된 `form`을 제출하기 위한 로그인 버튼이 필요할 것입니다.
+
+어떤 기능이 필요할까요?
+상황에 따라 달라지는 부분이 있겠지만, 기본적으로는 세 가지 기능이 떠오릅니다.
+
+```jsx
+1. 값 입력받기 -> 사용자로부터 아이디와 비밀번호 값을 `input`으로 입력받아야 합니다.
+2. 유효성 검사 -> 입력받은 값이 유효한지 검사해야 합니다.
+3. 유효성 검사 피드백 전달 -> 유효성 검사의 피드백을 UI로 전달해야합니다.
+```
+
+`react hook form`을 사용하면 이 모든 기능들을 비교적 쉽게 구현할 수 있습니다.
+
+### 에러메시지 
+
+```tsx
+import { ErrorMessage } from '@hookform/error-message';
+
+// ...
+
+const { formState: { errors } } = useFormContext();
+
+// ...
+<span className={cx('input-field-err-msg')}>
+  <ErrorMessage errors={errors} name={name} render={({ message }) => <p>{message}</p>} />
+</span>
+```
+react hook form 자체의 ErrorMessage 컴포넌트를 사용해서 에러 메시지를 쉽게 UI에 보여줄 수 있습니다.
+
+### 자체 validation을 사용한 유효성 검사
+위에서 말했듯이 `react hook form` 자체에서 유효성 검사가 가능합니다.
+
+`register`에 두 번째 인자로 전달하는 객체에 `validation` 옵션을 사용하면 됩니다.
+필수 입력값 여부를 결정하는 `required`, 입력값의 최대/최소 길이를 정하는 `maxLength`/`minLength`, 원하는 정규식으로 입력값을 검사하는 `pattern` 외에도 다양한 옵션들이 있습니다.
+
+<a href='https://react-hook-form.com/docs/useform/register'>register validation 옵션들 알아보기</a>
+
+GGF 프로젝트 전의 프로젝트에서 사용했던 register validation 옵션들은 다음과 같습니다.
+
+```jsx          
+<input
+  {...register(name, {
+    required: isRequired ? 'This is Required.' : errorMessage?.empty,
+    pattern: {
+      value: regex, // constansts에 저장해둔 regex pattern
+      message: errorMessage?.invalid, // constansts에 저장해둔 에러메시지 문자열
+    },
+    minLength: name === 'password' && { // input의 name이 password면(= 비밀번호 입력 input이면)
+        value: 8, // 8자 제한
+        message: 'Please write at least 8 characters', // validation 검사 실패시 에러메시지
+      },
+  })}
+  {...props}
+/>
+```
+
+### 자체 validation의 단점
+여기까지 보셨을 때 `react hook form`으로도 충분히 `validation`이 가능하다는 것을 느끼실 수 있을 것입니다. 
+
+<a href='https://github.com/TickyTocky/TickyTocky'>TickyTokcy 프로젝트</a>에서 사용해본 결과, 다음과 같은 아쉬움들을 느꼈습니다.
+
+```json
+1. <input>의 코드가 매우 길어진다. -> 코드 가독성이 떨어진다. 
+2. validation 로직과 input의 UI가 섞인다. -> 코드 가독성과 유지보수성이 떨어진다.
+3. 복잡한 검증 로직은 작성하기 어렵다. -> validate를 사용할 수 있긴하지만, 복잡한 로직까지는 작성이 어렵다고 느꼈다.
+```
+평소에 리액트에서 컴포넌트를 만들 때 뷰와 로직을 분리하는 것을 우선으로 했기에, 특히 2번이 매우 아쉬운 부분이었습니다.
+
+후에 진행한 <a href='https://github.com/sprint-team3/GGF'>GGF</a>프로젝트에서는 이를 개선해보고 싶었고, 방법을 찾던 도중 `zod`를 알게 되었습니다.
+
+---
+## ❔ zod
+
+`zod`는 TypeScript-first 스키마 선언 및 유효성 검사 라이브러리입니다.
+
+개발자 친화적으로 설계되었으며, 유효성 검사기를 한 번만 선언하면 자동으로 정적 타입스크립트 타입을 추론한다는 특징이 있습니다.
+
+### 장점
+```json
+1. Zero dependencies
+2. Works in Node.js and all modern browsers -> Node.js를 비롯한 모든 모던 브라우저에서 작동한다.
+3. Tiny: 8kb minified + zipped -> 8kb라는 작은 용량!
+4. Immutable: methods (e.g. .optional()) return a new instance -> 메서드를 호출할 때마다 원본 객체를 변경하지 않고 새로운 객체를 반환하여 불변성을 지킨다.
+5. Concise, chainable interface -> 메서드 체이닝을 통해 여러 메서드를 연결해서 사용할 수 있다.
+6. Functional approach: parse, don't validate -> 데이터를 검증(validate)하기보다는 파싱(parse)하는 함수형 프로그래밍 접근 방식을 따른다.
+7. Works with plain JavaScript too! You don't need to use TypeScript.
+```
+zod는 위와 같이 많은 장점이 있지만, `zod`를 바로 도입했던 이유는 react hook form과의 시너지때문이었습니다.
+
+### 예시
+위에서 `react hook form`의 자체 `validation`으로만 만들었던 로그인 폼을 
+`react hook form`과 `zod`를 함께 사용해서 `validation` 해보겠습니다.
+
+먼저 `zod`에서는 값의 유효성 검사를 위해선 `스키마`라는 것을 만들어야 합니다. 아래처럼 간단히 만들 수 있습니다.
+* `스키마`는 데이터 구조를 정의하고 검증하는데 사용되는 일종의 설계도로, 여기에서는 `form`으로 들어올 값들의 <u>타입</u>과 <u>규칙</u>을 정해두는 것이라고 간단하게 생각하시면 됩니다.
+
+```tsx
+const SigninSchema = z.object({
+  email: z
+    .string() // 문자열
+    .min(1, { message: ERROR_MESSAGE.email.min }) // 최소 1자 이상
+    .email({message: ERROR_MESSAGE.email.regex, // email regex 
+  }),
+  password: z
+    .string() // 문자열
+    .min(8, { message: ERROR_MESSAGE.password.min }) // 최소 8자 이상
+    .regex(REGEX.password, ERROR_MESSAGE.password.regex), // password regex
+});
+```
+
+다음엔 만든 스키마를 `react hook form`의 `resolver`로 연결시켜주어야 합니다.
+```tsx
+  const methods = useForm({
+    mode: 'all',
+    resolver: zodResolver(SigninSchema),
+  });
+```
+
+후에는 `form`의 `onSubmit`에 위에서 만든 `submit`을 걸어주면 됩니다. 
+(로그인 폼의 자세한 코드는 <a href='https://github.com/sprint-team3/GGF/blob/dev/src/components/auth/SigninForm/index.tsx#L43'>여기</a>에서 확인해주세요)
+
+폼의 UI는 아래와 같습니다.
+```tsx
+<FormProvider {...methods}>
+  <form className={cx('signin-form')} onSubmit={methods.handleSubmit(handleSigninSubmit)}>
+    <fieldset className={cx('fieldset')}>
+      <legend>회원가입 정보 등록</legend>
+      <AuthInputField label='Email' name='email' type='email' placeholder='Type your email' />
+      <AuthInputField
+        label='Password'
+        name='password'
+        type='password'
+        maxLength={15}
+        placeholder='Type your password'
+      />
+      <BaseButton type='submit' theme='fill' size='large' isDisabled={!isValid} isQuantico>
+        Match Now
+      </BaseButton>
+    </fieldset>
+  </form>
+</FormProvider>
+```
+
+## react hook form과 zod를 같이 써야하는 이유
+위에서 예시 코드로 보셨을 때, 전자와 후자의 차이가 느껴지시나요?
+react hook form + zod를 사용해보고 나서 이 둘을 같이 써야하는 이유를 아래와 같이 정리해보았습니다.
+
+```tsx
+1. 타입 안전성을 보장할 수 있다.
+2. 스키마를 활용해 보다 강력하게 데이터 검증이 가능하다.
+3. 복잡한 데이터 구조나 검증 로직을 정의할 수 있다.
+4. 스키마를 다양한 곳에서 재사용할 수 있다.
+5. validation 로직과 view를 분리할 수 있다. -> 코드 가독성, 유지 보수성 향상
+6. validation의 구체적인 내용을 직관적으로 파악할 수 있다. 
+```
+
+---
+## 마무리하며
+
+`react hook form`과 zod 둘 다 접해본 경험이 많지 않아 초기에 사용하는데 많은 시행착오를 겪었습니다(자세한 내용은 차차 포스팅하겠습니다.). 
+
+하지만 익숙해지고나니 `form validaiton`에 이렇게 좋은 도구가 없다는 생각이 들더군요! 
+`react hook form`도 공식 docs가 매우 친절한 편이고, devTools도 제공하여 너무 좋았습니다.
+
+`zod`는 제공하는 기능 중 10%도 써보지 못한 것 같다는 생각이 들었습니다. 다음에는 `zod`의 여러 기능들을 제대로 활용하여 더 강력한 타입검증을 해보고 싶습니다.
+
+글에서 보여준 예시 코드 전문은 전부 
+<a href='https://github.com/sprint-team3/GGF'>GGF</a>와 <a href='https://github.com/TickyTocky/TickyTocky'>TickyTokcy</a> 깃헙에서 확인해보실 수 있습니다.
+
+제가 포스팅한 내용 중 잘못된 부분이 있다면 댓글로 언제든 남겨주시면 정정하도록 하겠습니다!
+
+---
+## Sources
+- <a href='https://www.react-hook-form.com/'> react hook form docs</a>
+- <a href='https://www.react-hook-form.com/api/useform/register'>react hook form register docs</a>
+- <a href='https://www.bigscal.com/blogs/frontend/why-is-react-hook-form-better-than-other-forms/'>why is react hook form better than other forms</a>
+- <a href='https://zod.dev/'>zod docs</a>

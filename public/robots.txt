@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /exclude
+
+# Host
+Host: https://lim-dev.vercel.app/
+
+# Sitemaps
+Sitemap: https://lim-dev.vercel.app/sitemap.xml
