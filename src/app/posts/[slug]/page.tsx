@@ -1,12 +1,13 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllPosts, getPostBySlug } from '@/lib/api';
+import { CMS_NAME } from '@/lib/constants';
 import markdownToHtml from '@/lib/markdownToHtml';
+import Alert from '@/app/_components/alert';
+import Container from '@/app/_components/container';
+import Header from '@/app/_components/header';
 import { PostBody } from '@/app/_components/post-body';
 import { PostHeader } from '@/app/_components/post-header';
-import Container from '@/app/_components/container';
-import Alert from '@/app/_components/alert';
-import Header from '@/app/_components/header';
 
 export default async function Post(props: Params) {
   const params = await props.params;
@@ -20,9 +21,9 @@ export default async function Post(props: Params) {
 
   return (
     <main>
-      {/* <Alert preview={post.preview} /> */}
-      <Container>
-        <Header />
+      {/* <Container className='px-80'> */}
+      <Container className=''>
+        {/* <Header /> */}
         <article className='mb-32'>
           <PostHeader
             title={post.title}
@@ -51,7 +52,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     return notFound();
   }
 
-  const title = `${post.title} | Next.js Blog Example with 우림`;
+  const title = `${post.title} | Next.js Blog Example with ${CMS_NAME}`;
 
   return {
     title,
@@ -69,28 +70,3 @@ export async function generateStaticParams() {
     slug: post.slug,
   }));
 }
-
-// import path from 'path';
-// import React from 'react';
-// import fs from 'fs';
-// import { notFound } from 'next/navigation';
-// import MDXContent from '@/components/MDXContent';
-
-// const postPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
-//   const slug = (await params).slug;
-//   const postDirectory = path.join(process.cwd(), 'posts');
-//   const filePath = path.join(postDirectory, `${slug}.mdx`);
-
-//   if (!fs.existsSync(filePath)) notFound();
-
-//   const mdxSource = fs.readFileSync(filePath, 'utf-8');
-
-//   return (
-//     <div>
-//       <h1>{slug}</h1>
-//       <MDXContent mdxSource={mdxSource} />
-//     </div>
-//   );
-// };
-
-// export default postPage;

@@ -1,28 +1,32 @@
 ---
 title: 'Next.js로 만든 블로그 이미지 최적화로 LCP 개선하기'
-description: '이미지 로딩 속도가 너무 느리다면... next/image로 최적화하세요'
-categories: ['성능최적화']
-thumbnail: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720793967654.avif'
-createdAt: 2024-07-11
-minsToRead: 16
+excerpt: '이미지 로딩 속도가 너무 느리다면... next/image로 최적화하세요'
+coverImage: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720793967654.avif'
+date: '2024-07-11T05:35:07.322Z'
+author:
+  name: Lim
+  picture: '/assets/blog/authors/profile_pixel.avif'
+ogImage:
+  url: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720793967654.avif'
 ---
 
 ## 🚀 들어가며
+
 최근 블로그 리팩토링 및 디자인 수정을 진행 중인데, 포스팅 썸네일이 너무 느리게 로딩된다는 생각이 들었습니다.
 
-그래서 [**light house**](https://chromewebstore.google.com/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk?hl=ko&pli=1)로 측정해봤더니 `performance` 점수가 아주 심각했습니다. 
+그래서 [**light house**](https://chromewebstore.google.com/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk?hl=ko&pli=1)로 측정해봤더니 `performance` 점수가 아주 심각했습니다.
 
 리포트를 보니 이미지가 차지하는 비중이 대부분이었습니다.
 
 그래서 바로 이미지 최적화를 진행해보았고, 결국엔 `performance` 점수를 `59점`에서 **100점**까지 올렸습니다. 그 과정을 한 번 기록해보려 합니다.
 
---- 
+---
 
 ## ❔ 이미지 최적화
 
 이미지 최적화는 웹 페이지의 성능을 개선하기 위해 이미지를 압축하고 크기를 조정하여 로딩 시간을 줄이는 과정을말합니다.
 
-이를 통해 페이지 로딩 속도를 높이는 것은 물론 사용자 경험 개선, SEO 개선 및 데이터 사용량 절감의 효과도 얻을 수 있습니다. 
+이를 통해 페이지 로딩 속도를 높이는 것은 물론 사용자 경험 개선, SEO 개선 및 데이터 사용량 절감의 효과도 얻을 수 있습니다.
 
 ### 구체적인 방법
 
@@ -41,20 +45,24 @@ minsToRead: 16
 실제로 저는 이미지 파일을 `avif`로 압축하여 사용했습니다.
 
 #### avif VS WebP
+
 `WebP`보다 조금 더 좋은 압축률을 자랑하는 `avif`를 선택하였습니다.
 
 물론 아직 특정 브라우저에서는 지원되지 않는다는 단점이 있지만, `Chrome`, `Firefox`, `iOS 16.1` 및 `macOS 13.3`부터 `Safari`에서도 지원하기 때문에 큰 문제가 없을거라 판단하였습니다.
 
 ### 2. 이미지 크기 조정
+
 사용자가 보는 화면에 크기에 맞춰 이미지를 보여줘야 합니다. 보이는 화면보다 크기가 크면 성능이 저하됩니다.
 
 `Next.js`에서 `Image` 태그를 사용할 때는 특히 정확한 이미지 크기를 지정해주는 것이 중요합니다.
 
 ### 3. 반응형 이미지 사용
+
 `Next.js`의 `Next.js`를 사용한다면 속성을 설정함으로서 반응형 이미지 사용이 가능합니다.
 
 ### 4. 지연 로딩(Lazy Loading)
-사용자가 스크롤할 때 이미지를 로드하여 초기 로딩 시간을 줄입니다. 
+
+사용자가 스크롤할 때 이미지를 로드하여 초기 로딩 시간을 줄입니다.
 
 이것도 `Next.js`가 기본으로 지원하는 기능입니다.
 
@@ -66,11 +74,18 @@ minsToRead: 16
 
 이미지 최적화를 하기 위해선 먼저 페이지 성능 측정이 필요하겠죠.
 
-<img src="https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720795691618.avif" alt='before optimization'/>
+<img
+  src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720795691618.avif'
+  alt='before optimization'
+/>
 
 [**light house**](https://chromewebstore.google.com/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk?hl=ko&pli=1)를 사용해 측정한 제 블로그 메인 페이지의 `Performance` 점수입니다.
 
-<img src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720803710064.avif' width='200px' alt='sad' />
+<img
+  src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720803710064.avif'
+  width='200px'
+  alt='sad'
+/>
 
 많이 느리다고 느끼긴 했지만, 실상은 생각보다 심각했습니다.
 
@@ -78,9 +93,9 @@ minsToRead: 16
 
 <aside>
 
-`LCP`는 Largest Contentful Paint의 약자로, 웹 페이지의 주요 성능 지표 중 하나입니다. 
+`LCP`는 Largest Contentful Paint의 약자로, 웹 페이지의 주요 성능 지표 중 하나입니다.
 
-사용자가 페이지를 로드했을 때 가장 큰 콘텐츠 요소(이미지, 비디오, 블록 레벨의 텍스트 등)가 화면에 렌더링되는 시간을 측정합니다. 
+사용자가 페이지를 로드했을 때 가장 큰 콘텐츠 요소(이미지, 비디오, 블록 레벨의 텍스트 등)가 화면에 렌더링되는 시간을 측정합니다.
 
 이는 사용자 경험에 큰 영향을 미치며, 특히 페이지가 얼마나 빨리 유용한 콘텐츠를 제공하는지를 나타내는 중요한 지표입니다.
 
@@ -94,7 +109,10 @@ LCP가 느리면 사용자 경험을 저하시키는 건 물론, SEO에도 영�
 
 먼저 light house의 리포트를 살펴보았습니다.
 
-<img src="https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720796517894.avif" alt='light house report' />
+<img
+  src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720796517894.avif'
+  alt='light house report'
+/>
 
 light house를 측정하고 나면 제일 상단의 점수 밑에 이렇게 자세한 이유들이 나오는데요.
 이것들을 하나씩 읽어보면서 원인을 발견하였습니다. 그리고 그것을 하나씩 고쳐나갔습니다.
@@ -102,6 +120,7 @@ light house를 측정하고 나면 제일 상단의 점수 밑에 이렇게 자�
 ### 1. Next Image의 올바른 사용
 
 ### 문제
+
 저는 기존에 반응형을 고려하여 이미지의 크기가 동적으로 바뀌길 원했습니다. 그래서 `next/image`에 `sizes='100%'` `fill` 속성을 주고, Image 태그의 부모 요소에 원하는 크기를 css로 줬었습니다.
 
 원래 `<Image>`의 `sizes`라는 속성은 브라우저에게 이미지를 어떤 크기로 표시할지 알려주는 역할을 합니다.
@@ -113,8 +132,8 @@ light house를 측정하고 나면 제일 상단의 점수 밑에 이렇게 자�
 반응형을 고려하여 `<Image>`를 사용할 수 있는 다른 속성에 대해 더 알아보았고, 다음과 같은 방법을 사용하였습니다.
 
 #### 1️⃣ width & height
-```tsx
 
+```tsx
 const actualSize = {
   width: 250,
   height: 160,
@@ -123,39 +142,45 @@ const actualSize = {
 // ...
 
 <Image
-     // ...
-    width={actualSize.width}
-    height={actualSize.height}
-/>
+  // ...
+  width={actualSize.width}
+  height={actualSize.height}
+/>;
 ```
+
 `<Image>`에 PC 화면일때의 이미지의 `width`와 `height`를 기본으로 주었습니다.
 
 #### 2️⃣ size
+
 ```tsx
 <Image
-     // ...
-    sizes='(max-width: 1399px) 250px, (max-width: 1199px) 480px, (max-width: 767px) 720px'
+  // ...
+  sizes='(max-width: 1399px) 250px, (max-width: 1199px) 480px, (max-width: 767px) 720px'
 />
 ```
+
 `size`를 기기별 `break point`에 따라 설정하도록 하였습니다.
 
 #### 3️⃣ priority & loading
+
 ```tsx
 const Thumbnail = ({ src, priority = false }: ThumbnailProps) => (
   <div className={cx('thumbnail')}>
     <Image
-    // ...
+      // ...
       priority={priority}
       loading={priority ? undefined : 'lazy'}
     />
   </div>
 );
-
 ```
+
 페이지에서 화면에 가장 크게 보이는 3개의 썸네일에는 `priority`를, 나머지 이미지에는 `lazy loading`을 적용하여 페이지 성능을 향상시켰습니다.
 
 ## 2. preconnect
+
 ### 문제
+
 이미지가 호스팅된 외부 도메인이 `preconnect`로 연결되어 있지 않았습니다.
 
 (사실은 `link`에 `preconnect` 라는 속성이 있는지 몰랐는데, `light house` 리포트 덕분에 알게 되었습니다. )
@@ -165,15 +190,18 @@ const Thumbnail = ({ src, priority = false }: ThumbnailProps) => (
 ```tsx
 <link rel='preconnect' href={preconnectLink} crossOrigin='anonymous' />
 ```
+
 `<link>`의 `preconnect` 속성을 사용해 이미지가 호스팅된 링크를 미리 넣어주었습니다. 이를 통해 브라우저가 사이트에 필요한 연결을 미리 예상할 수 있게 되었습니다.
 
 ## 3. 이미지 압축, 적절한 크기의 이미지
+
 ### 문제
 
 - `jpg` 확장자의 이미지를 사용했기에, 이미지의 용량이 너무 컸습니다.
 - 불필요하게 큰 크기의 이미지를 사용했습니다. (저는 주로 항상 초고화질의 이미지를 사용했었는데, 그러다 보니 이미지의 용량이 매우 컸었습니다.)
 
 ### 해결
+
 - 이미지를 `avif`로 무손실압축하여 이미지의 용량을 `60%` 이상 줄였습니다.
 - 적절한 크기의 이미지를 사용했습니다.
 
@@ -181,25 +209,35 @@ const Thumbnail = ({ src, priority = false }: ThumbnailProps) => (
 
 ## 📊 최적화 결과
 
-<img src="https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720798338955.avif" alt='after optimization' />
+<img
+  src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720798338955.avif'
+  alt='after optimization'
+/>
 
 ### LCP
+
 `17.9s`에서 `0.7`로 약 **96%** 개선되었습니다.
 
 확실히 페이지 초기 로딩이 빨라진 것이 체감되어 기쁩니다.
 
 ### Performance
-<img src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720800075851.avif' height='300px' alt='happy' />
 
-#### 🥳🎈🎉`59점`에서 `100점`으로 약 **69%** 개선되었습니다. 
+<img
+  src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720800075851.avif'
+  height='300px'
+  alt='happy'
+/>
+
+#### 🥳🎈🎉`59점`에서 `100점`으로 약 **69%** 개선되었습니다.
 
 ### ☘️ 소감
+
 - 이미지 최적화에 대해 더 알아보면서, LCP 0.7s에서 0.5s 이하로 더 빠르게 개선시켜보고 싶다는 생각이 들었습니다.
-- 이번에 제가 설계했던 컴포넌트 자체의 문제들을 많이 발견하였는데요, 앞으로는 성능적인 면도 고려해서 개발해야겠다는 생각도 들었습니다. 
-- 제 블로그보다 더 많은 이미지를 렌더링해야하는 서비스에선 어떻게 최적화를 하고 있을지 궁금해졌습니다. 
+- 이번에 제가 설계했던 컴포넌트 자체의 문제들을 많이 발견하였는데요, 앞으로는 성능적인 면도 고려해서 개발해야겠다는 생각도 들었습니다.
+- 제 블로그보다 더 많은 이미지를 렌더링해야하는 서비스에선 어떻게 최적화를 하고 있을지 궁금해졌습니다.
 - light house 덕분에 태그들의 새로운 기능들을 알게 되어서 좋았고, 조금씩 성능을 개선해가는 것이 너무 재미있었습니다.
 
---- 
+---
 
 ## Sources
 

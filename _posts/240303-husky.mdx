@@ -1,10 +1,13 @@
 ---
 title: 'Next.js에서 husky와 lint-staged로 lint 자동화하기'
-description: '협업 프로젝트에서 husky 세팅해보기 '
-categories: ['husky', 'lint-staged', 'ESLint', 'prettier', 'style-lint']
-thumbnail: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775263799.avif'
-createdAt: 2024-03-03
-minsToRead: 13
+excerpt: '협업 프로젝트에서 husky 세팅해보기'
+coverImage: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775263799.avif'
+date: '2024-03-03T05:35:07.322Z'
+author:
+  name: Lim
+  picture: '/assets/blog/authors/profile_pixel.avif'
+ogImage:
+  url: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775263799.avif'
 ---
 
 ## 들어가며
@@ -12,8 +15,8 @@ minsToRead: 13
 <br />
 git을 개발자들과 협업한다면 필수로 사용해야 할 husky 세팅법에 대해 공유해보려 합니다.
 <br />
-husky를 알게 된 지는 얼마되지 않았지만, 한 번 husky를 사용하고 나서는 무조건 모든 프로젝트에
-husky를 세팅하고 있습니다.{' '}
+husky를 알게 된 지는 얼마되지 않았지만, 한 번 husky를 사용하고 나서는 무조건 모든
+프로젝트에 husky를 세팅하고 있습니다.{' '}
 
 한 번 세팅만 잘 해두면, 전체 코드 베이스 통합이 conflict 없이 에러
 없이 잘 이루어질 수 있기에 husky 사용을 적극 권장합니다.
@@ -21,14 +24,17 @@ husky를 세팅하고 있습니다.{' '}
 <br />
 
 ## husky를 써야하는 이유가 뭘까요?
-<br />
-`prettier`와 같은 `formatter`, `ESLint`와 같은 `linter`를 사용해 코드 컨벤션을
-유지하고 에러가 없는 클린 코드만을 코드베이스에 통합하는 것은 협업에서 매우 기초적이자 중요한 부분입니다.
 
 <br />
-하지만 아무리 `formatter`와 `linter`를 세팅한다고 해도, 인간의 실수(human error)로 혹은 다른
-여러 이유로 에러가 발생하는 코드나 코드 컨벤션이 지켜지지 않은 코드를 git에 commit하거나 push하는
-경우가 있습니다. 협업시 이런 미연의 상황을 방지하는데 효과적인 도구가 바로 husky입니다.
+`prettier`와 같은 `formatter`, `ESLint`와 같은 `linter`를 사용해 코드 컨벤션을 유지하고
+에러가 없는 클린 코드만을 코드베이스에 통합하는 것은 협업에서 매우 기초적이자 중요한
+부분입니다.
+
+<br />
+하지만 아무리 `formatter`와 `linter`를 세팅한다고 해도, 인간의 실수(human error)로 혹은
+다른 여러 이유로 에러가 발생하는 코드나 코드 컨벤션이 지켜지지 않은 코드를 git에
+commit하거나 push하는 경우가 있습니다. 협업시 이런 미연의 상황을 방지하는데 효과적인
+도구가 바로 husky입니다.
 
 <br />
 ## husky란?
@@ -134,6 +140,7 @@ stylelint까지 연결시켜주면 정말 편하니 추천드립니다.
 <br />
 
 ## 제가 느낀 husky의 아쉬운 점
+
 <br />
 husky가 정말 좋지만, 아쉬운 점이 몇 가지있습니다.
 <br />
@@ -141,14 +148,15 @@ husky가 정말 좋지만, 아쉬운 점이 몇 가지있습니다.
 <br />
 파일의 개수와 코드의 양이 많아질 수록, 스크립트를 실행하는 시간이 점점 길어집니다.
 
-물론 제가 eslint, prettier, stylelint까지 다 걸어두긴 했지만, 커밋 하나 남길 때마다 10초 정도 기다려야하는 게 조금 답답할 때도 있습니다. 
+물론 제가 eslint, prettier, stylelint까지 다 걸어두긴 했지만, 커밋 하나 남길 때마다 10초 정도 기다려야하는 게 조금 답답할 때도 있습니다.
 
-그래도 그만큼 코드 검사가 이루어지는 것이니 어쩔 수 없는 것 같습니다. 
+그래도 그만큼 코드 검사가 이루어지는 것이니 어쩔 수 없는 것 같습니다.
+
 <br />
 ### 2. VSCode에서의 버그
 <br />
-스크립트를 실행하는 동안에 vscode 내부의 source control에서 +로 파일을 add 하면 그 파일은 스크립트가 적용되지 않은 상태로 같이 커밋이 되어버립니다.
-그래서 꼭 주의하셔야합니다.
+스크립트를 실행하는 동안에 vscode 내부의 source control에서 +로 파일을 add 하면 그 파일은
+스크립트가 적용되지 않은 상태로 같이 커밋이 되어버립니다. 그래서 꼭 주의하셔야합니다.
 <br />
 ## 마치며
 <br />
@@ -159,8 +167,9 @@ husky를 사용하기 전의 프로젝트는 다시는 떠올리기도 싫을 �
 아직 사용해보지 않은 분들이 계시다면, 협업 프로젝트에서 꼭 한 번 사용해보시기를 강력히 추천드립니다.
 
 제가 전달한 정보에서 잘못되거나 개선했으면 하는 부분이 있다면 언제든 댓글로 알려주시면 감사하겠습니다.
-<br />
----
+
+## <br />
+
 <br />
 ## 참고 자료
 <br />

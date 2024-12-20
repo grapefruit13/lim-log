@@ -1,45 +1,54 @@
 ---
 title: '토큰 갱신 무한 루프 해결'
-description: 'axios 토큰 갱신 무한 루프 트러블 슈팅'
-categories: ['axios', 'accessToken', 'refreshToken', '토큰', 'TroubleShooting']
-thumbnail: "https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775120117.avif"
-createdAt: 2024-03-05
-minsToRead: 6
+excerpt: 'axios 토큰 갱신 무한 루프 트러블 슈팅'
+coverImage: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775120117.avif'
+date: '2024-03-05T05:35:07.322Z'
+author:
+  name: Lim
+  picture: '/assets/blog/authors/profile_pixel.avif'
+ogImage:
+  url: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775120117.avif'
 ---
 
 ## 들어가며
+
 <br />
-<a href='https://github.com/sprint-team3/GGF'>GGF 프로젝트</a>에서 SSR CSR 렌더링 환경에서 토큰 갱신 로직을 구현하다가 만났던 트러블 슈팅에 대해 기록해보려 합니다.
+<a href='https://github.com/sprint-team3/GGF'>GGF 프로젝트</a>에서 SSR CSR 렌더링 환경에서
+토큰 갱신 로직을 구현하다가 만났던 트러블 슈팅에 대해 기록해보려 합니다.
 <br />
 
 ## 구현하고자 했던 로직
+
 <br />
-유저가 엑세스 토큰이 만료되고 리프레시 토큰만 가지고 있을 때, 리프레시 토큰을 가지고 액세스토큰을 갱신해주는 로직을 구현하고자 했습니다.
+유저가 엑세스 토큰이 만료되고 리프레시 토큰만 가지고 있을 때, 리프레시 토큰을 가지고
+액세스토큰을 갱신해주는 로직을 구현하고자 했습니다.
 <br />
 
 ### axios.ts
+
 <br />
 
 ```ts
 // 엑세스 토큰이 없고 리프레시 토큰이 있을 때만
 if (!accessToken && refreshToken) {
-    // config header authoriziation에 refreshToken을 넣어라
-    config.headers['Authorization'] = `Bearer ${refreshToken}`;
-    try {
-        // CSR 방식으로 토큰 갱신을 해라
-        const res = await Auth.renewToken('CSR');
-        const { accessToken, refreshToken } = res.data;
-        // 갱신한 토큰을 쿠키에 넣어라
-        setAuthCookie(null, accessToken, refreshToken);
-    } catch (error) {
-        return Promise.reject(error);
-    }
+  // config header authoriziation에 refreshToken을 넣어라
+  config.headers['Authorization'] = `Bearer ${refreshToken}`;
+  try {
+    // CSR 방식으로 토큰 갱신을 해라
+    const res = await Auth.renewToken('CSR');
+    const { accessToken, refreshToken } = res.data;
+    // 갱신한 토큰을 쿠키에 넣어라
+    setAuthCookie(null, accessToken, refreshToken);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
-
 ```
+
 <br />
 
 ### auth.ts
+
 <br />
 
 ```ts
@@ -48,7 +57,7 @@ renewToken: (type: 'CSR' | 'SSR') => {
     // CSR 방식이면
     if (type === 'CSR') {
         // CSR 인스턴스로 토큰 갱신 요청을 보내라
-        return instance.post(`${AUTH_API}${TOKENS_API}`); 
+        return instance.post(`${AUTH_API}${TOKENS_API}`);
     // SSR 방식이면
     } else {
         // SSR 인스턴스로 토큰 갱신 요청을 보내라
@@ -59,22 +68,27 @@ renewToken: (type: 'CSR' | 'SSR') => {
 
 <br />
 그래서 위 처럼 코드를 작성했지만, CSR 토큰 갱신에서 무한 로딩이 문제가 발생했습니다.
-정확히 문제가 발생하는 지점을 찾기 위해 실행문들 사이에 콘솔을 찍어보았고, 정확히 위에 첨부한 axios 코드부터 무한로딩이 발생했습니다.
+정확히 문제가 발생하는 지점을 찾기 위해 실행문들 사이에 콘솔을 찍어보았고, 정확히 위에
+첨부한 axios 코드부터 무한로딩이 발생했습니다.
 <br />
 
 ## 문제 원인
+
 <br />
-원인은 바로 인스턴스 순환 참조였습니다.
-auth에서 참조하는 instance가 axios.ts에서 만든 instance였기에, 인스턴스가 계속 자기 자신을 참조하면서 무한 로딩에 빠졌던 것이었습니다.
-지금 보면 굉장히 단순한 이유였지만, 프로젝트 마감 기한을 맞춰야하여 급한 마음에 실수를 바로 찾지 못해 많은 시간을 소비했습니다.
+원인은 바로 인스턴스 순환 참조였습니다. auth에서 참조하는 instance가 axios.ts에서 만든
+instance였기에, 인스턴스가 계속 자기 자신을 참조하면서 무한 로딩에 빠졌던 것이었습니다.
+지금 보면 굉장히 단순한 이유였지만, 프로젝트 마감 기한을 맞춰야하여 급한 마음에 실수를
+바로 찾지 못해 많은 시간을 소비했습니다.
 <br />
 
 ## 해결 방법
+
 <br />
 이 문제를 해결하기 위해 userInstance라는 새로운 axios instance를 만들었습니다.
 <br />
 
 ### userInstance.ts
+
 <br />
 
 ```ts
@@ -91,7 +105,7 @@ const userInstance = axios.create({
   },
 });
 
-// userInstance로 api 요청을 보내기 전에 
+// userInstance로 api 요청을 보내기 전에
 userInstance.interceptors.request.use(
   (config) => {
     // CSR에서 접근할 수 있는 쿠키에서 토큰을 가져온다
@@ -99,22 +113,23 @@ userInstance.interceptors.request.use(
 
     // 액세스 토큰은 없고, 리프레시 토큰만 있으면
     if (!accessToken && refreshToken) {
-        // 리프레시 토큰을 헤더에 넣는다
-        config.headers['Authorization'] = `Bearer ${refreshToken}`;
+      // 리프레시 토큰을 헤더에 넣는다
+      config.headers['Authorization'] = `Bearer ${refreshToken}`;
     }
     // 설정한 config를 반환한다
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 export default userInstance;
 ```
+
 <br />
 
 ### auth.ts
-<br />
 
+<br />
 
 ```ts
 renewToken: (type: 'CSR' | 'SSR') => {
@@ -125,9 +140,11 @@ renewToken: (type: 'CSR' | 'SSR') => {
     }
 },
 ```
+
 <br />
 
 ## 마치며
+
 <br />
 
 - GGF 프로젝트에서 next.js에서 CSR와 SSR이라는 렌더링 방식을 사용해보면서, 렌더링 방식에 따라 토큰을 갱신하는 로직에도 차이가 있다는 것을 배우게 되었습니다.

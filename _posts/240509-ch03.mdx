@@ -1,16 +1,19 @@
 ---
 title: '(리팩터링 2판) ch03. 코드에서 나는 악취'
-description: '코드에서 나는 냄새가 리팩터링의 힌트가 된다'
-categories: ['리팩터링', 'refactoring','마틴파울러', '코드악취']
-thumbnail: "https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775406863.avif"
-createdAt: 2024-05-09
-minsToRead: 5
+excerpt: '코드에서 나는 냄새가 리팩터링의 힌트가 된다'
+coverImage: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775406863.avif'
+date: '2024-05-09T05:35:07.322Z'
+author:
+  name: Lim
+  picture: '/assets/blog/authors/profile_pixel.avif'
+ogImage:
+  url: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775406863.avif'
 ---
 
 마틴 파울러는 리팩터링이 필요한 코드들에 일정한 패턴이 있다는 것을 발견하였고, 그 패턴을 코드에서 나는 악취라고 부른다.
 
 악취가 풍기는 코드 목록들은 다음과 같다.
-    
+
     ```tsx
     1. 기이한 이름
     2. 중복 코드
@@ -37,6 +40,7 @@ minsToRead: 5
     23. 상속 포기
     24. 주석
     ```
+
 이 중에서 내가 자주 맡는 악취 코드 세 가지 유형을 정리해보았다.
 
 ---
@@ -66,7 +70,9 @@ minsToRead: 5
 ### 추출할 코드 덩어리 찾는 법
 
 1. 주석 참고하기
+
 - 주석이 설명하는 코드는 함수로, 주석 내용을 토대로 함수 이름을 짓는다.
+
 2. 조건문, 반복문 찾기
 
 ---

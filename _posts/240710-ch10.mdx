@@ -1,10 +1,13 @@
 ---
 title: '(리팩터링 2판) ch10.3 중첩 조건문을 보호 구문으로 바꾸기'
-description: '읽기 싫어지는 복잡한 중첩문들 리팩토링해보자'
-categories: ['리팩터링']
-thumbnail: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775346774.avif'
-createdAt: 2024-07-10
-minsToRead: 15
+excerpt: '읽기 싫어지는 복잡한 중첩문들 리팩토링해보자'
+coverImage: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775346774.avif'
+date: '2024-07-19T05:35:07.322Z'
+author:
+  name: Lim
+  picture: '/assets/blog/authors/profile_pixel.avif'
+ogImage:
+  url: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1720775346774.avif'
 ---
 
 ## 💭 배경
@@ -16,11 +19,11 @@ minsToRead: 15
 2. `둘 중 하나`만 정상 동작으로 이어지는 형태
 ```
 
-- 선자의 경우  `if else`문을 사용한다.
+- 선자의 경우 `if else`문을 사용한다.
 - 후자의 경우 비정상 조건을 `if`에서 검사한 다음 조건이 `참`일 때(비정상일 때) 함수에서 빠져나오는 <u>보호 구문</u>을 사용한다.
 
-
 중첩 조건문을 보호 구문으로 바꾸는 것의 핵심은 **의도**를 부각하는 것이다.
+
 - `if-else`문에서 `if절`과 `else절`에 **똑같은 무게**를 두어 코드를 읽는 사람에게 **양 갈래의 중요성이 같다**는 뜻을 전달한다.
 - 반대로 <u>보호 구문</u>은 "이것이 이 함수의 핵심이 아니다. 이 일이 일어났을 때는 어떤 조치를 취한 후 함수에서 **빠져나온다**"는 뜻을 전달한다.
 
@@ -50,24 +53,24 @@ minsToRead: 15
 
 ```jsx
 function payAmount(employee) {
-    let result;
-    if (employee.isSeperated) { // 퇴사한 직원인가?
-        result = {amount: 0, reasonCode: 'SEP'};
+  let result;
+  if (employee.isSeperated) {
+    // 퇴사한 직원인가?
+    result = { amount: 0, reasonCode: 'SEP' };
+  } else {
+    if (employee.isRetired) {
+      // 은퇴한 직원인가?
+      result = { amount: 0, reasonCode: 'RET' };
+    } else {
+      // 급여 계산 로직
+      lorem.ipsum(dolor.sitAmet);
+      consectetur(adipiscing).elit();
+      setDate.do.eiusmod = tempor.incididunt.ut(labore) && dolore(magna.aliqua);
+      ut.enim.ad(minim.veniam);
+      result = someFinalComputation();
     }
-    else {
-        if (employee.isRetired) { // 은퇴한 직원인가?
-            result = {amount: 0, reasonCode: 'RET'};
-        }
-        else {
-            // 급여 계산 로직
-            lorem.ipsum(dolor.sitAmet);
-            consectetur(adipiscing).elit();
-            setDate.do.eiusmod = tempor.incididunt.ut(labore) && dolore(magna.aliqua);
-            ut.enim.ad(minim.veniam);
-            result = someFinalComputation();
-        }
-    }
-    return result;
+  }
+  return result;
 }
 ```
 
@@ -80,21 +83,20 @@ function payAmount(employee) {
 
 ```jsx
 function payAmount(employee) {
-    let result;
-    if (employee.isSeperated) return {amount: 0, reasonCode: 'SEP'};
-		if (employee.isRetired) { 
-      result = {amount: 0, reasonCode: 'RET'};
-    }
-    else {
-       // 급여 계산 로직
-       lorem.ipsum(dolor.sitAmet);
-       consectetur(adipiscing).elit();
-       setDate.do.eiusmod = tempor.incididunt.ut(labore) && dolore(magna.aliqua);
-       ut.enim.ad(minim.veniam);
-       result = someFinalComputation();
-    }
+  let result;
+  if (employee.isSeperated) return { amount: 0, reasonCode: 'SEP' };
+  if (employee.isRetired) {
+    result = { amount: 0, reasonCode: 'RET' };
+  } else {
+    // 급여 계산 로직
+    lorem.ipsum(dolor.sitAmet);
+    consectetur(adipiscing).elit();
+    setDate.do.eiusmod = tempor.incididunt.ut(labore) && dolore(magna.aliqua);
+    ut.enim.ad(minim.veniam);
+    result = someFinalComputation();
+  }
   return result;
- }
+}
 ```
 
 #### 2️⃣ 변경 후 테스트
@@ -143,12 +145,14 @@ function adjustedCapital(anInstrument) {
   let result = 0;
   if (anInstrument.capital > 0) {
     if (anInstrument.interestRate > 0 && anInstrument.duration > 0) {
-      result = (anInstrument.income / anInstrument.duration) * anInstrument.adjustmentFactor;
+      result =
+        (anInstrument.income / anInstrument.duration) * anInstrument.adjustmentFactor;
     }
   }
   return result;
 }
 ```
+
 - 조건이 거짓일 때는 return 되도록 조건문을 수정하면 된다.
 
 #### 1️⃣ 최상위 조건을 보호 구문으로 변경 및 조건을 역으로 수정
@@ -158,7 +162,8 @@ function adjustedCapital(anInstrument) {
   let result = 0;
   if (anInstrument.capital <= 0) return result;
   if (anInstrument.interestRate > 0 && anInstrument.duration > 0) {
-    result = (anInstrument.income / anInstrument.duration) * anInstrument.adjustmentFactor;
+    result =
+      (anInstrument.income / anInstrument.duration) * anInstrument.adjustmentFactor;
   }
   return result;
 }
@@ -193,9 +198,12 @@ function adjustedCapital(anInstrument) {
 ```jsx
 function adjustedCapital(anInstrument) {
   let result = 0;
-  if (anInstrument.capital <= 0
-		  || anInstrument.interestRate <= 0 
-		  || anInstrument.duration <= 0) return result;
+  if (
+    anInstrument.capital <= 0 ||
+    anInstrument.interestRate <= 0 ||
+    anInstrument.duration <= 0
+  )
+    return result;
   result = (anInstrument.income / anInstrument.duration) * anInstrument.adjustmentFactor;
   return result;
 }
@@ -205,9 +213,12 @@ function adjustedCapital(anInstrument) {
 
 ```jsx
 function adjustedCapital(anInstrument) {
-  if (anInstrument.capital <= 0
-		  || anInstrument.interestRate <= 0 
-		  || anInstrument.duration <= 0) return 0;
+  if (
+    anInstrument.capital <= 0 ||
+    anInstrument.interestRate <= 0 ||
+    anInstrument.duration <= 0
+  )
+    return 0;
   return (anInstrument.income / anInstrument.duration) * anInstrument.adjustmentFactor;
 }
 ```
