@@ -1,41 +1,47 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: "class",
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  darkMode: 'class',
+  content: ['./src/app/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic':
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
-        "accent-1": "#FAFAFA",
-        "accent-2": "#EAEAEA",
-        "accent-7": "#333",
-        success: "#0070f3",
-        cyan: "#79FFE1",
+        'accent-1': '#FAFAFA',
+        'accent-2': '#EAEAEA',
+        'accent-7': '#333',
+        success: '#0070f3',
+        cyan: '#79FFE1',
       },
       spacing: {
-        28: "7rem",
+        28: '7rem',
       },
       letterSpacing: {
-        tighter: "-.04em",
+        tighter: '-.04em',
       },
       fontSize: {
-        "5xl": "2.5rem",
-        "6xl": "2.75rem",
-        "7xl": "4.5rem",
-        "8xl": "6.25rem",
+        '5xl': '2.5rem',
+        '6xl': '2.75rem',
+        '7xl': '4.5rem',
+        '8xl': '6.25rem',
       },
       boxShadow: {
-        sm: "0 5px 10px rgba(0, 0, 0, 0.12)",
-        md: "0 8px 30px rgba(0, 0, 0, 0.12)",
+        sm: '0 5px 10px rgba(0, 0, 0, 0.12)',
+        md: '0 8px 30px rgba(0, 0, 0, 0.12)',
+      },
+      screens: {
+        xs: '320px', // 아주 작은 모바일 화면 (스마트폰)
+        sm: '576px', // 작은 모바일 화면
+        md: '768px', // 작은 태블릿
+        lg: '1024px', // 일반 태블릿
+        xl: '1280px', // 작은 데스크탑
+        '2xl': '1536px', // 큰 데스크탑
+        '3xl': '1920px', // 매우 큰 화면 (4K)
+        '4xl': '2560px', // 대형 모니터
       },
     },
   },

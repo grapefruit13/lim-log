@@ -13,7 +13,7 @@ export default function Index() {
 
   return (
     <main>
-      <Container>
+      <Container className='max-w-[1200px] xs:px-4 sm:px-8 md:px-16'>
         <Intro />
         <HeroPost
           title={heroPost.title}
