@@ -6,7 +6,7 @@ type Props = {
 };
 
 const Container = ({ children, className }: Props) => {
-  return <div className={cn('container mx-auto', className)}>{children}</div>;
+  return <div className={cn('mx-auto w-full', className)}>{children}</div>;
 };
 
 export default Container;
