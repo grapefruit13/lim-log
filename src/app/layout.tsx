@@ -55,7 +55,7 @@ export default function RootLayout({
         className={cn(
           notoSansKR.className,
           inter.className,
-          'dark:bg-slate-900 dark:text-slate-400 w-full'
+          'dark:bg-slate-800 dark:text-slate-100 w-full'
         )}
       >
         <Header />
