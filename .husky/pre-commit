@@ -1,6 +1,1 @@
-# branch가 main이라면 문구를 노출 시키며 종료
-if [ "$branch" = "main" ]; then
-  echo "You can't commit directly to main branch"
-  exit 1
-fi
-# npx lint-staged
+npm test

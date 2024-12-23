@@ -18,6 +18,11 @@ const eslintConfig = [
     'prettier'
   ),
   ...compat.plugins('@typescript-eslint', 'eslint-plugin-import'),
+  {
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+    },
+  },
 ];
 
 export default eslintConfig;

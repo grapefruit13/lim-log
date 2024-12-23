@@ -1,0 +1,297 @@
+---
+title: 'Next.js + TypeScript 개발시 eslint-plugin-import로 import문 컨벤션 지키기'
+excerpt: 'import문 자동으로 정렬해주는 라이브러리로 코드컨벤션 지켜보자'
+coverImage: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1721324698253.avif'
+date: '2024-04-03T05:35:07.322Z'
+author:
+  name: Lim
+  picture: '/assets/blog/authors/profile_pixel.avif'
+ogImage:
+  url: 'https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1721324698253.avif'
+---
+
+## 코드 컨벤션과 import문
+
+협업을 하면서 항상 느끼는 부분은 `코드 컨벤션은 엄격하게 정해둘 수록 좋다!` 입니다.
+
+변수명부터 시작해서 `CSS property` 순서까지. `정말 이런 거까지 정해야 돼?` 라는 말이 나올 정도로 엄격해야합니다.
+
+(이렇게 해도 협업을 하다보면 컨벤션이 필요한 부분이 항상 더 생기죠.)
+
+특히 리액트 개발을 하다보면 `import`문은 프로젝트의 볼륨이 커질 수록 상당히 길어집니다.
+
+근데 이 `import` 문에 컨벤션이 없다면... 코드 처음부터 읽기가 굉장히 난감해지죠.
+
+아래 사진은 [GGF 로그인폼의 import문](https://github.com/sprint-team3/GGF/blob/dev/src/components/auth/SigninForm/index.tsx)만 가져온 것인데요.
+
+```tsx
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import classNames from 'classnames/bind';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { Auth } from '@/apis/auth';
+import { API_ERROR_MESSAGE, ERROR_MESSAGE, PAGE_PATHS, REGEX, WEBPS } from '@/constants';
+import { setAuthCookie } from '@/utils';
+
+import AuthInputField from '@/components/auth/AuthInputField';
+import { BaseButton } from '@/components/commons/buttons';
+import { ConfirmModal, ModalButton } from '@/components/commons/modals';
+import useRouteToPage from '@/hooks/useRouteToPage';
+import useToggleButton from '@/hooks/useToggleButton';
+import useUserStore from '@/stores/useUserStore';
+
+import { Account } from '@/types';
+
+import styles from './SigninForm.module.scss';
+```
+
+컨벤션을 철저히 지키고 나니 훨씬 보기가 깔끔하죠.
+
+(중간 중간에 있는 줄 바꿈은 취향존중해주세요😀)
+
+만약에 이 많은 `import`문들이 중구난방으로 정렬되어있었다면 생각만해도 머리가 아프네요.
+
+근데 이 `import`문 정렬을 일일이 수동으로 한다면 얼마나 번거로울지 상상이 가시죠?
+
+<img
+  src='https://sprint-fe-project.s3.ap-northeast-2.amazonaws.com/globalnomad/profile_image/2-3_116_1721319729946.avif'
+  alt='노션 컨벤션사진'
+/>
+
+개발 초기에 [GGF](https://good-game-friends.vercel.app/landing) 팀 노션에 정리해두었던 `import`문 컨벤션인데요.
+
+처음에는 정해둔 컨벤션대로 수동으로 `import`문을 정렬했지만,
+
+얼마 지나지 않아 이 행동이 굉장히 너무 많이 반복되는 비효율적인 행동이라고 생각이 들더라고요.
+
+전 세계의 개발자 중 누군가는 저처럼 같은 고통을 느끼고, 이를 편하게 할 수 있는 라이브러리를 만들어두지 않았을까 하는 생각에 구글링을 해보았습니다.
+
+그리고 역시 사용할 수 있는 라이브러리를 찾았습니다!
+
+---
+
+## `eslint-plugin-import` 플러그인
+
+[eslint-plugin-import](https://github.com/import-js/eslint-plugin-import)는 `ESLint`의 플러그인 중 하나로, `ES6+` `import/export` 린팅을 지원합니다.
+프로젝트의 코드 스타일을 일관되게 유지하고, 코드 품질을 높이며, 가독성을 향상시킬 수 있습니다.
+
+추가로 `TS`도 지원하니 `TS + eslint` 조합을 쓰는 사람들에게 강력 추천합니다!
+
+제가 직접 사용해보면서 느낀 장단점을 적어보겠습니다.
+
+### 장점
+
+- 모듈의 해석과 검증을 통해 `import`문이 올바르게 작성되었는지 해줍니다. 덕분에 잘못된 경로나 파일명을 사용했을 때 오류를 미리 발견할 수 있었습니다.
+- 일관성있는 `import`문 스타일로 코드 가독성과 유지보수성이 향상됩니다. 깔끔해서 너무 보기 좋습니다.
+- 사용하지 않거나 중복으로 쓰고 있는 `import`문을 감지해줍니다. 특히 `rules` 설정에서 규칙 미충족시 `error`로 해두면 빨간줄이 보여서 금방 문제를 찾을 수 있어서 편리합니다. (사용하지 않는 `import`문 삭제 안 하고 커밋하는 경우가 없어집니다. 최곱니다.)
+- 깃헙에 문서화가 잘 되어있습니다.
+- 자동 정렬 기능이 편리합니다.
+- 룰 커스텀이 자유롭습니다.
+
+### 단점
+
+- 초기 세팅이 꽤 복잡합니다. (지금이야 잘 설정가능하지만, 초기에는 꽤나 고생을 했었네요.)
+- 러닝 커브가 꽤 있습니다. 기능과 규칙이 많아서 익히는데 시간이 필요합니다.
+- 대규모 코드에선 성능 이슈가 발생할 수 있습니다. 모든 import문을 검사하고 정렬하기 때문에, 프로젝트 볼륨이 커지면 가끔씩 느리게 작동하는 게 느껴집니다.
+
+---
+
+## 세팅 방법
+
+**Next.js + TypeScript + ESlint + Prettier 기준임을 참고해주세요.**
+
+### 1. 플러그인 설치
+
+```shell
+    npm install eslint-plugin-import @typescript-eslint/parser eslint-import-resolver-typescript --save-dev
+```
+
+`save dev`로 플러그인들을 설치합니다.
+저는 `TypeScript`를 사용하기 때문에 첫 번째 플러그인 외로 두 개를 더 깔아주었습니다.
+
+### 2. `.eslintrc.json`의 `extends` `plugins` 설정
+
+```json
+{
+  "extends": [
+    "eslint:recommended", // ESLint 기본 규칙 추천세트 사용
+    "plugin:import/recommended", // 플러그인 추천 규칙세트 사용
+    "plugin:import/typescript", // 플러그인 추천 TS 규칙 세트 사용
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["eslint-plugin-import", "@typescript-eslint"]
+}
+```
+
+### 3. `settings` 설정
+
+```json
+{
+  "settings": {
+    // eslint-plugin-import가 TS 모듈 해석할 수 있도록 설정
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true // 타입 정의 파일(*.d.ts)을 항상 찾으려고 시도
+      }
+    },
+    "react": {
+      "version": "detect" // eslint-plugin-react가 자동으로 프로젝트에서 사용 중인 React 버전을 감지하도록 설정
+    }
+  }
+}
+```
+
+### 4. `rules` 설정
+
+`order`에 관한 `docs`는 [rules/order](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)에서 확인 가능합니다.
+
+[GGF](https://good-game-friends.vercel.app/landing) 에서 사용했던 `rules`의 전체 코드입니다.
+
+가장 중요한 부분이니 꼼꼼히 설정해야 합니다.
+
+코드 원문이 보고싶으시다면 [GGF .eslintrc.json](https://github.com/sprint-team3/GGF/blob/dev/.eslintrc.json)로 와주세요
+
+```json
+{
+  "rules": {
+    "import/order": [
+      "error", // import/order 규칙이 지켜지지 않으면 에러 발생
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling"],
+          "object",
+          "unknown",
+          "type",
+          "index"
+        ],
+        "pathGroups": [
+          { "pattern": "next", "group": "external", "position": "before" },
+          { "pattern": "next/**", "group": "external", "position": "before" },
+          { "pattern": "react", "group": "external", "position": "before" },
+          { "pattern": "react/**", "group": "external", "position": "before" },
+          { "pattern": "dayjs/**", "group": "external" },
+          { "pattern": "@/components/**", "group": "unknown" },
+          { "pattern": "@/stores/**", "group": "unknown" },
+          { "pattern": "@/hooks/**", "group": "unknown" },
+          {
+            "pattern": "@/constants/**",
+            "group": "unknown"
+          },
+          { "pattern": "@/types", "group": "type" },
+          { "pattern": "@/types/**", "group": "type" },
+          { "pattern": "./**", "group": "index" }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc", "caseInsensitive": true }
+      }
+    ]
+  }
+}
+```
+
+#### ** groups **
+
+```json
+ "groups": ["builtin", "external", "internal", ["parent", "sibling"], "object", "unknown", "type", "index"],
+```
+
+해당 플러그인에서는 `import`문들을 여러 그룹으로 나누어, 그 그룹에서 우선순위를 정해서 정렬할 수 있도록 합니다.
+`groups`에 사용하는 그룹들은 다음과 같습니다.
+
+```json
+1. "builtin" : Node.js 내장 모듈
+2. "external" : 외부 패키지
+3. "internal" : 내부 모듈
+4. ["parent", "sibling"]: 부모/형제 모듈
+5. "object": 객체 모듈
+6. "unknown": 알 수 없는 모듈
+7. "type": 타입 모듈
+8. "index": 현재 디렉토리 모듈
+```
+
+순서는 원하는 대로 조정하면 됩니다.
+
+#### ** pathgroups **
+
+```json
+  "pathGroups": [
+          { "pattern": "next", "group": "external", "position": "before" },
+          { "pattern": "next/**", "group": "external", "position": "before" },
+          { "pattern": "react", "group": "external", "position": "before" },
+          { "pattern": "react/**", "group": "external", "position": "before" },
+          { "pattern": "dayjs/**", "group": "external" },
+          { "pattern": "@/components/**", "group": "unknown" },
+          { "pattern": "@/stores/**", "group": "unknown" },
+          { "pattern": "@/hooks/**", "group": "unknown" },
+          {
+            "pattern": "@/constants/**",
+            "group": "unknown"
+          },
+          { "pattern": "@/types", "group": "type" },
+          { "pattern": "@/types/**", "group": "type" },
+          { "pattern": "./**", "group": "index" }
+        ],
+```
+
+위처럼 `pathGroups`에서 그룹에 원하는 패턴을 임의로 추가할 수 있는데요.
+
+저는 저희 팀의 코드 컨벤션에 맞춰서 `builtin` 모듈 다음에 `next -> react -> dayjs` 순으로 오도록 `external` 그룹을 설정하였습니다.
+
+그리고 `unknown` 그룹에는 `components -> stores -> hooks -> constants` 순서로 넣고 그 후에 `types`가 오도록 하였습니다.
+
+**추가로 외부 라이브러리 사용시 `import` 경로에 `depth`가 생기면 임의로 pattern에 꼭 추가해주어야 정렬이 가능합니다.**
+
+#### ** pathGroupsExcludedImportTypes **
+
+```json
+    "pathGroupsExcludedImportTypes": ["builtin"],
+```
+
+특정 그룹에서 제외할 `import` 타입을 정의합니다.
+
+#### ** newlines-between **
+
+```json
+    "newlines-between": "always",
+```
+
+`import` 그룹 사이에 줄을 항상 새로운 줄을 추가하도록 설정합니다.
+
+이외에도 `[ignore|always|always-and-inside-groups|never]`의 옵션이 있습니다.
+
+#### ** lphabetize **
+
+```json
+    "alphabetize": { "order": "asc", "caseInsensitive": true }
+```
+
+`import`문을 알파벳 순서로 정렬하도록 설정합니다.
+
+- `order`를 `asc`로 주면 오름차순, `desc`로 주면 내림차순으로 설정됩니다.
+- `caseInsensitive`를 true로 주면 대소문자 구분없이 정렬됩니다.
+
+---
+
+## 마치며
+
+오늘은 원하는 룰에 따라 `import`문을 자동 정렬해주고 `import`문의 에러를 감지해주는 `eslint-plugin-import` 플러그인의 장단점과 세팅방법을 기록해보았습니다.
+
+코드 컨벤션을 중요시하는 분들이라면 한번 써보시길 추천드립니다!
+
+---
+
+## Source
+
+- [eslint-plugin-import docs](https://github.com/import-js/eslint-plugin-import/blob/v2.29.1/docs/rules/order.md)
+- [parksil0님블로그](https://velog.io/@parksil0/eslint-plugin-import)
+- [GGF .eslintrc.json](https://github.com/sprint-team3/GGF/blob/dev/.eslintrc.json)
