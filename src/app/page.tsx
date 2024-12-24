@@ -1,6 +1,5 @@
 import Container from '@/app/_components/container';
 import { HeroPost } from '@/app/_components/hero-post';
-import { Intro } from '@/app/_components/intro';
 import { MoreStories } from '@/app/_components/more-stories';
 import { getAllPosts } from '@/lib/api';
 
@@ -13,8 +12,7 @@ export default function Index() {
 
   return (
     <main>
-      <Container className='max-w-[1200px] xs:px-4 sm:px-8 md:px-16'>
-        <Intro />
+      <Container className='max-w-[1000px] xs:px-4 sm:px-8 md:px-16'>
         <HeroPost
           title={heroPost.title}
           coverImage={heroPost.coverImage}
