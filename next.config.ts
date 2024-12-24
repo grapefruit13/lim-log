@@ -1,19 +1,31 @@
 import type { NextConfig } from 'next';
+import mdx from '@next/mdx';
 
-const nextConfig: NextConfig = {
+const withMDX = mdx({
+  extension: /\.mdx?$/,
+  options: async () => {
+    const rehypePrism = (await import('rehype-prism-plus')).default;
+    return {
+      rehypePlugins: [rehypePrism],
+    };
+  },
+});
+
+const nextConfig: NextConfig = withMDX({
   transpilePackages: ['next-mdx-remote'],
   images: {
     remotePatterns: [
       {
-        protocol: 'https', // 모든 HTTPS 프로토콜
-        hostname: '**', // 모든 도메인 허용
+        protocol: 'https',
+        hostname: '**',
       },
       {
-        protocol: 'http', // HTTP 프로토콜도 허용
+        protocol: 'http',
         hostname: '**',
       },
     ],
   },
-};
+  pageExtensions: ['ts', 'tsx', 'mdx'],
+});
 
 export default nextConfig;
