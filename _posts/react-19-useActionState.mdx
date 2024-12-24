@@ -36,7 +36,7 @@ async function increment(previousState, formData) {
   return previousState + 1;
 }
 
-function StatefulForm({}) {
+function StatefulForm() {
   const [state, formAction] = useActionState(increment, 0);
   return (
     <form>
@@ -113,9 +113,9 @@ function MyComponent() {
 
 1. 폼의 현재 상태 - 초기에는 사용자가 전달한 초기 상태이지만, 폼이 제출된 후에는 사용자가 전달한 액션의 리턴 값으로 설정된 값이 됩니다.
 
-> 2. A new action that you pass to `<form>` as its action prop.
+> 2. A new action that you pass to `<form/>` as its action prop.
 
-2. 액션 프롭으로 `<form>`에 전달하는 새로운 액션
+2. 액션 프롭으로 `<form/>`에 전달하는 새로운 액션
 
 > 3. A pending state that you can utilise whilst your action is processing.
 
