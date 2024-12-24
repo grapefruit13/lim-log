@@ -1,8 +1,12 @@
+'use client';
+
+import { useTitleStore } from '@/stores/useTitleStore';
 import Avatar from './avatar';
 import CoverImage from './cover-image';
 import DateFormatter from './date-formatter';
 import { PostTitle } from '@/app/_components/post-title';
 import { type Author } from '@/interfaces/author';
+import { useEffect } from 'react';
 
 type Props = {
   title: string;
@@ -12,6 +16,11 @@ type Props = {
 };
 
 export function PostHeader({ title, coverImage, date, author }: Props) {
+  const { setTitle } = useTitleStore.getState();
+  useEffect(() => {
+    setTitle(title);
+  }, [setTitle, title]);
+
   return (
     <>
       <PostTitle>{title}</PostTitle>
