@@ -1,19 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styles from './switch.module.css';
+import { useThemeStore } from '@/stores/useThemeStore';
 
-const STORAGE_KEY = 'nextjs-blog-starter-theme';
+export const STORAGE_KEY = 'theme';
 const modes = ['system', 'dark', 'light'] as const;
-type ColorSchemePreference = (typeof modes)[number];
 
 const ThemeSwitcher = () => {
-  // theme mode state
-  const [mode, setMode] = useState<ColorSchemePreference>(
-    () =>
-      ((typeof localStorage !== 'undefined' &&
-        localStorage.getItem(STORAGE_KEY)) as ColorSchemePreference) ?? 'system'
-  );
+  const { mode, setMode } = useThemeStore();
 
   // updating DOM on Client side with useEffect
   useEffect(() => {
