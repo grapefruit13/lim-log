@@ -3,31 +3,66 @@ import React from 'react';
 
 export const MDXComponents = {
   h1: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h1 className='text-4xl text-blue-900 font-bold mt-8 mb-4' {...props} />
-  ),
-  h2: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h2 className='text-3xl mt-12 mb-4 leading-snug' {...props} />
-  ),
-  h3: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h3 className='text-2xl mt-8 mb-4 leading-snug' {...props} />
-  ),
-  h4: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h4 className='text-xl mt-4 mb-4 leading-snug' {...props} />
-  ),
-  h5: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h5 className='text-lg mt-3 mb-4 leading-snug' {...props} />
-  ),
-  h6: (props: React.HTMLProps<HTMLHeadingElement>) => (
-    <h6 className='text-base mt-2 mb-4 leading-snug' {...props} />
-  ),
-  pre: (props: React.HTMLProps<HTMLPreElement>) => (
-    <pre
-      className='bg-gray-900 text-gray-100 rounded-md p-4 overflow-x-auto'
+    <h1
+      className='text-4xl dark:text-neutral-50 text-blue-900 font-extrabold mt-8 mb-4'
       {...props}
     />
   ),
+  h2: (props: React.HTMLProps<HTMLHeadingElement>) => (
+    <h2
+      className='text-3xl dark:text-neutral-50 text-slate-800 font-bold mt-12 mb-4 leading-snug'
+      {...props}
+    />
+  ),
+  h3: (props: React.HTMLProps<HTMLHeadingElement>) => (
+    <h3
+      className='text-2xl dark:text-neutral-50 text-slate-900 font-bold mt-8 mb-4 leading-snug'
+      {...props}
+    />
+  ),
+  h4: (props: React.HTMLProps<HTMLHeadingElement>) => (
+    <h4
+      className='dark:text-neutral-50 text-slate-950 font-bold text-xl mt-4 mb-4 leading-snug'
+      {...props}
+    />
+  ),
+  h5: (props: React.HTMLProps<HTMLHeadingElement>) => (
+    <h5
+      className='dark:text-neutral-50 text-blue-900 font-semibold text-lg mt-3 mb-4 leading-snug'
+      {...props}
+    />
+  ),
+  h6: (props: React.HTMLProps<HTMLHeadingElement>) => (
+    <h6
+      className='dark:text-neutral-50 text-blue-900 font-semibold text-base mt-2 mb-4 leading-snug'
+      {...props}
+    />
+  ),
+  // pre: (props: React.HTMLProps<HTMLPreElement>) => (
+  //   <pre
+  //     className='bg-gray-900 text-gray-100 rounded-md p-4 overflow-x-auto text-sm'
+  //     {...props}
+  //   />
+  // ),
+  pre: (props: React.HTMLProps<HTMLPreElement>) => {
+    return (
+      <div className='relative'>
+        {/* 맥 윈도우 스타일의 버튼들 */}
+        <div className='absolute top-0 left-0 flex space-x-2 bg-slate-700 dark:bg-neutral-50 w-full p-2 rounded-t'>
+          <span className='w-3 h-3 bg-red-500 rounded-full'></span>
+          <span className='w-3 h-3 bg-yellow-400 rounded-full'></span>
+          <span className='w-3 h-3 bg-green-500 rounded-full'></span>
+        </div>
+        {/* 코드 블럭 */}
+        <pre
+          className='bg-neutral-200 dark:bg-slate-700 text-slate-900 dark:text-gray-100 rounded px-3 py-3 pt-10 text-wrap text-sm overflow-x-auto'
+          {...props}
+        />
+      </div>
+    );
+  },
   code: (props: React.HTMLProps<HTMLElement>) => (
-    <code className='bg-gray-800 text-gray-100 rounded px-1 py-0.5' {...props} />
+    <code className='bg-gray-900 text-gray-100 rounded px-1 py-0.5' {...props} />
   ),
   img: (props: React.HTMLProps<HTMLImageElement>) => {
     const { src, alt, width, height } = props;
@@ -52,6 +87,13 @@ export const MDXComponents = {
   aside: (props: React.HTMLProps<HTMLElement>) => (
     <aside className='my-4 py-4 rounded' {...props} />
   ),
+  em: (props: React.HTMLProps<HTMLElement>) => (
+    <em className=' dark:text-slate-900' {...props} />
+  ),
+  // quote style
+  blockquote: (props: React.HTMLProps<HTMLQuoteElement>) => (
+    <blockquote className='my-4 rounded px-4 py-2 dark:bg-slate-950' {...props} />
+  ),
   li: (props: React.HTMLProps<HTMLLIElement>) => <li className='' {...props} />,
   ul: (props: React.HTMLProps<HTMLUListElement>) => (
     <ul className='my-6 ml-6 pr-3 last-of-type:list-disc' {...props} />
@@ -64,7 +106,7 @@ export const MDXComponents = {
   },
   hr: (props: React.HTMLProps<HTMLHRElement>) => (
     <hr
-      className='border-t-2 border-gray-900 dark:border-indigo-100 w-full my-6'
+      className='border-t-1 border-gray-900 dark:border-neutral-200 w-full my-6'
       {...props}
     />
   ),
