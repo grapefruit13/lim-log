@@ -50,6 +50,10 @@ export default function RootLayout({
         <meta name='msapplication-config' content='/favicon/browserconfig.xml' />
         <meta name='theme-color' content='#000' />
         <link rel='alternate' type='application/rss+xml' href='/feed.xml' />
+        <meta
+          name='google-site-verification'
+          content='alHfhHfmSnUGdgt__6qzl3pNiy-mcL_hUzjK6Zcf408'
+        />
       </head>
       <body
         className={cn(
