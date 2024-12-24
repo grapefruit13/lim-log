@@ -22,7 +22,7 @@ export function HeroPost({ title, coverImage, date, excerpt, author, slug }: Pro
           title={title}
           src={coverImage}
           slug={slug}
-          imageClassName='h-[700px]'
+          imageClassName='h-auto max-h-[600px]'
         />
       </div>
       <div className='md:grid md:grid-cols-2 md:gap-x-8 lg:gap-x-8 mb-20 md:mb-28'>

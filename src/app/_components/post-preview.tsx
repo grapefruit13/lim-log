@@ -8,17 +8,9 @@ type Props = {
   date: string;
   excerpt: string;
   slug: string;
-  imageClassName?: string;
 };
 
-export function PostPreview({
-  title,
-  coverImage,
-  date,
-  excerpt,
-  slug,
-  imageClassName,
-}: Props) {
+export function PostPreview({ title, coverImage, date, excerpt, slug }: Props) {
   return (
     <div>
       <div className='mb-5'>
@@ -26,7 +18,7 @@ export function PostPreview({
           slug={slug}
           title={title}
           src={coverImage}
-          imageClassName={imageClassName}
+          imageClassName='h-[320px] transition-transform duration-300 ease-in-out transform hover:scale-105'
         />
       </div>
       <h3 className='text-3xl mb-3 leading-snug'>

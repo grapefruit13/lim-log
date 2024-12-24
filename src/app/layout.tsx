@@ -3,9 +3,9 @@ import { HOME_OG_IMAGE_URL } from '@/lib/constants';
 import type { Metadata } from 'next';
 import { Inter, Noto_Sans_KR } from 'next/font/google';
 import cn from 'classnames';
-
 import './globals.css';
 import Header from '@/app/_components/header';
+import TitleResetter from './_components/title-resetter';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 const notoSansKR = Noto_Sans_KR({ subsets: ['latin'] });
@@ -63,6 +63,7 @@ export default function RootLayout({
         )}
       >
         <Header />
+        <TitleResetter />
         <div className='min-h-screen'>{children}</div>
         {/* TODO: 수정 필요 */}
         <Footer />

@@ -21,7 +21,6 @@ export function MoreStories({ posts }: Props) {
             date={post.date}
             slug={post.slug}
             excerpt={post.excerpt}
-            imageClassName='h-[400px] transition-transform duration-300 ease-in-out transform hover:scale-105'
           />
         ))}
       </div>
