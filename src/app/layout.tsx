@@ -1,14 +1,17 @@
 import Footer from '@/app/_components/footer';
 import { HOME_OG_IMAGE_URL } from '@/lib/constants';
 import type { Metadata } from 'next';
-import { Inter, Noto_Sans_KR } from 'next/font/google';
+import {
+  Inter,
+  // Noto_Sans_KR
+} from 'next/font/google';
 import cn from 'classnames';
 import './globals.css';
 import Header from '@/app/_components/header';
 import TitleResetter from './_components/title-resetter';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
-const notoSansKR = Noto_Sans_KR({ subsets: ['latin'] });
+// const notoSansKR = Noto_Sans_KR({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: `lim-log`,
@@ -57,9 +60,9 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          notoSansKR.className,
           inter.className,
-          'dark:bg-slate-800 dark:text-slate-100 w-full'
+          // notoSansKR.className,
+          'dark:bg-slate-800 bg-neutral-50 dark:text-slate-100 w-full'
         )}
       >
         <Header />
