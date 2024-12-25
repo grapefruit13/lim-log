@@ -10,7 +10,7 @@
   border-radius: 50%;
   border: 1px dashed currentColor;
   cursor: pointer;
-  --size: 36px;
+  --size: 28px;
   height: var(--size);
   width: var(--size);
   transition: all 0.3s ease-in-out 0s !important;
@@ -33,7 +33,7 @@
 [data-mode='light'] .switch {
   box-shadow: 0 0 50px 10px yellow;
   background-color: yellow;
-  border: 1px solid orangered;
+  border: 1px solid rgb(218, 218, 28);
 }
 
 [data-mode='dark'] .switch {
