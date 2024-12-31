@@ -1,26 +1,24 @@
 import Container from '@/app/_components/container';
-import { HeroPost } from '@/app/_components/hero-post';
 import { MoreStories } from '@/app/_components/more-stories';
-import { getAllPosts } from '@/lib/api';
+import { getAllPosts, getRecommendedPosts } from '@/lib/api';
+import MainHeader from '@/app/_components/main-header';
+import CarouselPosts from '@/app/_components/carousel-posts';
 
 export default function Index() {
   const allPosts = getAllPosts();
-
-  const heroPost = allPosts[0];
-
-  const morePosts = allPosts.slice(1);
+  const recommendedPosts = getRecommendedPosts();
+  const morePosts = allPosts.slice(0);
 
   return (
     <main>
-      <Container className='max-w-[1000px] xs:px-4 sm:px-8 md:px-16'>
-        <HeroPost
-          title={heroPost.title}
-          coverImage={heroPost.coverImage}
-          date={heroPost.date}
-          author={heroPost.author}
-          slug={heroPost.slug}
-          excerpt={heroPost.excerpt}
-        />
+      <MainHeader />
+      <Container className='max-w-[1000px] flex flex-col gap-16 xs:px-4 sm:px-8 md:px-16'>
+        <section className=''>
+          <h2 className='mb-8 text-5xl md:text-7xl font-bold tracking-tighter leading-tight'>
+            Recommendations
+          </h2>
+          <CarouselPosts posts={recommendedPosts} />
+        </section>
         {morePosts.length > 0 && <MoreStories posts={morePosts} />}
       </Container>
     </main>

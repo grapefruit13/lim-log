@@ -22,7 +22,17 @@ export function getAllPosts(): Post[] {
   const slugs = getPostSlugs();
   const posts = slugs
     .map((slug) => getPostBySlug(slug))
-    // sort posts by date in descending order
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
   return posts;
+}
+
+/**
+ * @description 추천 포스트만 필터링
+ */
+export function getRecommendedPosts(): Post[] {
+  const allPosts = getAllPosts();
+  const recommendedPosts = allPosts
+    .filter((post) => post?.recommended ?? false)
+    .sort((post1, post2) => (post1.date > post2.date ? 1 : -1));
+  return recommendedPosts;
 }

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import CoverImage from './cover-image';
 import DateFormatter from './date-formatter';
 
 type Props = {
@@ -10,26 +9,18 @@ type Props = {
   slug: string;
 };
 
-export function PostPreview({ title, coverImage, date, excerpt, slug }: Props) {
+export function PostPreview({ title, date, excerpt, slug }: Props) {
   return (
-    <div>
-      <div className='mb-5'>
-        <CoverImage
-          slug={slug}
-          title={title}
-          src={coverImage}
-          imageClassName='h-[320px] transition-transform duration-300 ease-in-out transform hover:scale-105'
-        />
-      </div>
-      <h3 className='text-3xl mb-3 leading-snug'>
-        <Link href={`/posts/${slug}`} className='hover:underline'>
+    <div className='py-4 border-b border-gray-200 transition-colors duration-300'>
+      <h3 className='text-xl font-bold mb-1 leading-snug hover:underline'>
+        <Link href={`/posts/${slug}`} className='dark:text-neutral-100'>
           {title}
         </Link>
       </h3>
-      <div className='text-lg mb-4'>
+      <div className='text-sm text-slate-700 dark:text-neutral-300 mb-2'>
         <DateFormatter dateString={date} />
       </div>
-      <p className='text-lg leading-relaxed mb-4'>{excerpt}</p>
+      <p className='text-sm dark:text-gray-200 text-slate-900 line-clamp-2'>{excerpt}</p>
     </div>
   );
 }
