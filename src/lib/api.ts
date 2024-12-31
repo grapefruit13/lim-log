@@ -22,7 +22,6 @@ export function getAllPosts(): Post[] {
   const slugs = getPostSlugs();
   const posts = slugs
     .map((slug) => getPostBySlug(slug))
-    // sort posts by date in descending order
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
   return posts;
 }
@@ -33,7 +32,7 @@ export function getAllPosts(): Post[] {
 export function getRecommendedPosts(): Post[] {
   const allPosts = getAllPosts();
   const recommendedPosts = allPosts
-    .filter((post) => post.recommended ?? false) // recommended가 true인 포스트만 필터링
-    .sort((post1, post2) => (post1.date > post2.date ? 1 : -1)); // 날짜 오름차순 정렬
+    .filter((post) => post?.recommended ?? false)
+    .sort((post1, post2) => (post1.date > post2.date ? 1 : -1));
   return recommendedPosts;
 }
