@@ -26,3 +26,14 @@ export function getAllPosts(): Post[] {
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
   return posts;
 }
+
+/**
+ * @description 추천 포스트만 필터링
+ */
+export function getRecommendedPosts(): Post[] {
+  const allPosts = getAllPosts();
+  const recommendedPosts = allPosts
+    .filter((post) => post.recommended ?? false) // recommended가 true인 포스트만 필터링
+    .sort((post1, post2) => (post1.date > post2.date ? 1 : -1)); // 날짜 오름차순 정렬
+  return recommendedPosts;
+}
