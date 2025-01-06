@@ -10,7 +10,11 @@ import { useEffect, useRef, useState } from 'react';
 
 const HEADER_HEIGHT = 120;
 
-const Header = () => {
+type HeaderProps = {
+  enableScrollEvent?: boolean;
+};
+
+const Header = ({ enableScrollEvent = false }: HeaderProps) => {
   const { title } = useTitleStore();
   const { mode } = useThemeStore();
   const [resolvedMode, setResolvedMode] = useState<'dark' | 'light'>('light');
@@ -31,6 +35,8 @@ const Header = () => {
   }, [mode]);
 
   useEffect(() => {
+    if (!enableScrollEvent) return;
+
     const handleScroll = () => {
       if (window.scrollY > HEADER_HEIGHT) {
         setIsSticky(true);
@@ -43,19 +49,19 @@ const Header = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [enableScrollEvent]);
 
   return (
     <>
       {/* 스크롤 감지용 작은 요소 */}
-      <div ref={sentinelRef} className='h-[0.01px]' />
+      {enableScrollEvent && <div ref={sentinelRef} className='h-[0.01px]' />}
       <header
         ref={headerRef}
         className={cn(
           'transition-all duration-300 ease-in-out w-full py-4 items-center sticky top-0 backdrop-blur-lg px-5 justify-between z-50 flex',
           {
-            hidden: !isSticky,
-            show: isSticky,
+            hidden: enableScrollEvent && !isSticky,
+            show: enableScrollEvent && isSticky,
           }
         )}
       >
