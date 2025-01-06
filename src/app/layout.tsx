@@ -7,8 +7,8 @@ import {
 } from 'next/font/google';
 import cn from 'classnames';
 import './globals.css';
-import Header from '@/app/_components/header';
 import TitleResetter from './_components/title-resetter';
+import Header from '@/app/_components/header';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 // const notoSansKR = Noto_Sans_KR({ subsets: ['latin'] });
@@ -23,9 +23,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: { slug?: string[] };
 }>) {
+  const isMainPage = !params.slug;
+
   return (
     <html lang='ko'>
       <head>
@@ -65,7 +69,7 @@ export default function RootLayout({
           'dark:bg-slate-800 bg-neutral-50 dark:text-slate-100 w-full'
         )}
       >
-        <Header />
+        <Header enableScrollEvent={!isMainPage} />
         <TitleResetter />
         <div className='min-h-screen'>{children}</div>
         {/* TODO: 수정 필요 */}
