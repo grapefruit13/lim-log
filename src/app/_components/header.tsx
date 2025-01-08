@@ -6,15 +6,14 @@ import { useTitleStore } from '@/stores/useTitleStore';
 import cn from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 const HEADER_HEIGHT = 120;
 
-type HeaderProps = {
-  enableScrollEvent?: boolean;
-};
-
-const Header = ({ enableScrollEvent = false }: HeaderProps) => {
+const Header = () => {
+  const pathname = usePathname();
+  const enableScrollEvent = pathname !== '/';
   const { title } = useTitleStore();
   const { mode } = useThemeStore();
   const [resolvedMode, setResolvedMode] = useState<'dark' | 'light'>('light');
