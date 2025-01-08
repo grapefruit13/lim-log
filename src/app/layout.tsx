@@ -1,4 +1,3 @@
-import Footer from '@/app/_components/footer';
 import { HOME_OG_IMAGE_URL } from '@/lib/constants';
 import type { Metadata } from 'next';
 import {
@@ -23,15 +22,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: { slug?: string[] };
 }>) {
-  const isMainPage = !params.slug;
+  const isMainPage = typeof window !== 'undefined' && window.location.pathname === '/';
 
   return (
-    <html lang='ko'>
+    <html lang='ko' suppressHydrationWarning>
       <head>
         <link
           rel='apple-touch-icon'
@@ -61,6 +58,19 @@ export default function RootLayout({
           name='google-site-verification'
           content='alHfhHfmSnUGdgt__6qzl3pNiy-mcL_hUzjK6Zcf408'
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const savedMode = localStorage.getItem('theme') ?? 'system';
+                const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                const resolvedMode = savedMode === 'system' ? systemMode : savedMode;
+                document.documentElement.classList.add(resolvedMode);
+                document.documentElement.setAttribute('data-mode', savedMode);
+              } catch (e) {}
+            `,
+          }}
+        />
       </head>
       <body
         className={cn(
@@ -69,11 +79,9 @@ export default function RootLayout({
           'dark:bg-slate-800 bg-neutral-50 dark:text-slate-100 w-full'
         )}
       >
-        <Header enableScrollEvent={!isMainPage} />
+        <Header enableScrollEvent={isMainPage} />
         <TitleResetter />
         <div className='min-h-screen'>{children}</div>
-        {/* TODO: 수정 필요 */}
-        <Footer />
       </body>
     </html>
   );
