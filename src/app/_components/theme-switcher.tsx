@@ -29,7 +29,6 @@ const ThemeSwitcher = () => {
     document.documentElement.classList.remove('dark', 'light');
     document.documentElement.classList.add(resolvedMode);
     document.documentElement.setAttribute('data-mode', mode);
-    document.documentElement.style.colorScheme = resolvedMode;
     // store selected theme to localStaorage
     localStorage.setItem(STORAGE_KEY, mode);
   }, []);
