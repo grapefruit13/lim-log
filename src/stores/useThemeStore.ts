@@ -1,13 +1,14 @@
+import { MODE } from '@/constants/_theme';
+import { ThemeType } from '@/types/_theme';
 import { create } from 'zustand';
-export type ColorSchemePreference = 'system' | 'dark' | 'light';
 
 type ThemeState = {
-  mode: ColorSchemePreference;
-  setMode: (mode: ColorSchemePreference) => void;
+  mode: ThemeType;
+  setMode: (mode: ThemeType) => void;
 };
 
 export const useThemeStore = create<ThemeState>((set) => ({
   // default mode is system
-  mode: 'system',
+  mode: MODE.SYSTEM as ThemeType,
   setMode: (mode) => set({ mode }),
 }));
