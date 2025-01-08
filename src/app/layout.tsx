@@ -25,10 +25,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isMainPage = typeof window !== 'undefined' && window.location.pathname === '/';
-
   return (
-    <html lang='ko' suppressHydrationWarning>
+    <html lang='ko' className='dark' data-mode='system'>
       <head>
         <link
           rel='apple-touch-icon'
@@ -58,19 +56,6 @@ export default function RootLayout({
           name='google-site-verification'
           content='alHfhHfmSnUGdgt__6qzl3pNiy-mcL_hUzjK6Zcf408'
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const savedMode = localStorage.getItem('theme') ?? 'system';
-                const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                const resolvedMode = savedMode === 'system' ? systemMode : savedMode;
-                document.documentElement.classList.add(resolvedMode);
-                document.documentElement.setAttribute('data-mode', savedMode);
-              } catch (e) {}
-            `,
-          }}
-        />
       </head>
       <body
         className={cn(
@@ -79,7 +64,7 @@ export default function RootLayout({
           'dark:bg-slate-800 bg-neutral-50 dark:text-slate-100 w-full'
         )}
       >
-        <Header enableScrollEvent={isMainPage} />
+        <Header />
         <TitleResetter />
         <div className='min-h-screen'>{children}</div>
       </body>
