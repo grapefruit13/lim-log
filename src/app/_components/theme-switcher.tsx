@@ -3,14 +3,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import styles from './switch.module.css';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { MODE, STORAGE_KEY } from '@/constants/_theme';
+import { ThemeType } from '@/types/_theme';
 
-const STORAGE_KEY = 'theme';
-const modes = ['system', 'dark', 'light'] as const;
+export const modes = [MODE.SYSTEM, MODE.DARK, MODE.LIGHT] as const;
 type Theme = (typeof modes)[number];
 
 // detect the system theme
 const getSystemTheme = () =>
-  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  window.matchMedia('(prefers-color-scheme: dark)').matches ? MODE.DARK : MODE.LIGHT;
 
 // get the stored theme from localStorage
 const getStoredTheme = () => localStorage.getItem(STORAGE_KEY) as Theme | null;
@@ -23,10 +24,10 @@ const ThemeSwitcher = () => {
   const applyTheme = useCallback((mode: Theme) => {
     // resolve 'system' mode to actual system theme
     const systemMode = getSystemTheme();
-    const resolvedMode = mode === 'system' ? systemMode : mode;
+    const resolvedMode = mode === MODE.SYSTEM ? systemMode : mode;
 
     // apply theme to the DOM
-    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.remove(MODE.DARK, MODE.LIGHT);
     document.documentElement.classList.add(resolvedMode);
     document.documentElement.setAttribute('data-mode', mode);
     // store selected theme to localStaorage
@@ -37,7 +38,7 @@ const ThemeSwitcher = () => {
     // default to 'system' if no theme is stored
     const initialMode = getStoredTheme() || 'system';
     applyTheme(initialMode);
-    setMode(initialMode);
+    setMode(initialMode as ThemeType);
     setMounted(true);
   }, []);
 
@@ -47,7 +48,7 @@ const ThemeSwitcher = () => {
     if (!mounted) return;
 
     const handleChangeTheme = () => {
-      if (mode === 'system') applyTheme(mode);
+      if (mode === MODE.SYSTEM) applyTheme(mode);
     };
 
     applyTheme(mode);
@@ -66,7 +67,7 @@ const ThemeSwitcher = () => {
   const handleModeSwitch = useCallback(() => {
     const currentIndex = modes.indexOf(mode);
     const nextMode = modes[(currentIndex + 1) % modes.length];
-    setMode(nextMode);
+    setMode(nextMode as ThemeType);
   }, [mode, setMode]);
 
   if (!mounted) {
