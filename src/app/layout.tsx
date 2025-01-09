@@ -5,6 +5,7 @@ import {
   // Noto_Sans_KR
 } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 import cn from 'classnames';
 import './globals.css';
 import TitleResetter from './_components/title-resetter';
@@ -90,6 +91,7 @@ export default function RootLayout({
         <div className='min-h-screen'>
           {children}
           <SpeedInsights />
+          <Analytics />
         </div>
       </body>
     </html>
