@@ -8,9 +8,12 @@ import cn from 'classnames';
 import './globals.css';
 import TitleResetter from './_components/title-resetter';
 import Header from '@/app/_components/header';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 // const notoSansKR = Noto_Sans_KR({ subsets: ['latin'] });
+const isProduction = process.env.NODE_ENV === 'production';
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   title: `lim-log`,
@@ -56,6 +59,23 @@ export default function RootLayout({
           name='google-site-verification'
           content='alHfhHfmSnUGdgt__6qzl3pNiy-mcL_hUzjK6Zcf408'
         />
+        {isProduction && GA_ID && (
+          <>
+            <Script
+              async
+              strategy='afterInteractive'
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            ></Script>
+            <Script id='google-analytics' strategy='afterInteractive'>
+              {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_ID}');
+          `}
+            </Script>
+          </>
+        )}
       </head>
       <body
         className={cn(
