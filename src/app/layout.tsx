@@ -4,6 +4,7 @@ import {
   Inter,
   // Noto_Sans_KR
 } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import cn from 'classnames';
 import './globals.css';
 import TitleResetter from './_components/title-resetter';
@@ -86,7 +87,10 @@ export default function RootLayout({
       >
         <Header />
         <TitleResetter />
-        <div className='min-h-screen'>{children}</div>
+        <div className='min-h-screen'>
+          {children}
+          <SpeedInsights />
+        </div>
       </body>
     </html>
   );
