@@ -1,4 +1,3 @@
-import { HOME_OG_IMAGE_URL } from '@/lib/constants';
 import type { Metadata } from 'next';
 import {
   Inter,
@@ -11,19 +10,43 @@ import './globals.css';
 import TitleResetter from './_components/title-resetter';
 import Header from '@/app/_components/header';
 import Script from 'next/script';
+import { METADATA } from '@/constants/_meatadata';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 // const notoSansKR = Noto_Sans_KR({ subsets: ['latin'] });
 const isProduction = process.env.NODE_ENV === 'production';
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const { title, description, keywords, url, images } = METADATA;
 
 export const metadata: Metadata = {
-  title: `lim-log`,
-  description: ``,
+  title,
+  description,
+  keywords,
   openGraph: {
-    images: [HOME_OG_IMAGE_URL],
+    title,
+    description,
+    url,
+    images,
   },
 };
+
+// export const metadata: Metadata = {
+//   title,
+//   description,
+//   keywords,
+//   openGraph: {
+//     title,
+//     description,
+//     url,
+//     images,
+//   },
+//   twitter: {
+//     card: 'summary_large_image',
+//     title,
+//     description,
+//     images: [images[0].url],
+//   },
+// };
 
 export default function RootLayout({
   children,
