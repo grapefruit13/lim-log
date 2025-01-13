@@ -4,16 +4,18 @@ import ThemeSwitcher from '@/app/_components/theme-switcher';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useTitleStore } from '@/stores/useTitleStore';
 import cn from 'classnames';
+import { Inter } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 const HEADER_HEIGHT = 120;
+const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 const Header = () => {
   const pathname = usePathname();
-  const enableScrollEvent = pathname !== '/';
+  const enableScrollEvent = pathname !== '/blog' && pathname !== '/';
   const { title } = useTitleStore();
   const { mode } = useThemeStore();
   const [resolvedMode, setResolvedMode] = useState<'dark' | 'light'>('light');
@@ -57,6 +59,7 @@ const Header = () => {
       <header
         ref={headerRef}
         className={cn(
+          inter.className,
           'transition-all duration-300 ease-in-out w-full py-4 items-center sticky top-0 backdrop-blur-lg px-5 justify-between z-50 flex',
           {
             hidden: enableScrollEvent && !isSticky,
@@ -64,12 +67,18 @@ const Header = () => {
           }
         )}
       >
-        <h2 className='text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight'>
-          <Link href='/' className='hover:underline'>
-            Lim-log
-          </Link>
-          .
-        </h2>
+        <div className='flex items-center justify-center gap-4'>
+          <h3 className='text-2xl md:text-3xl font-bold tracking-tight md:tracking-tighter leading-tight'>
+            <Link className='hover:underline' href='/blog'>
+              Blog.
+            </Link>
+          </h3>
+          <h3 className='text-2xl md:text-3xl font-bold tracking-tight md:tracking-tighter leading-tight'>
+            <Link className='hover:underline' href='/'>
+              Portfolio.
+            </Link>
+          </h3>
+        </div>
         <h2 className='text-xl md:text-2xl font-semibold tracking-tight md:tracking-tighter leading-tight'>
           {title || ''}
         </h2>
