@@ -2,11 +2,11 @@
 
 import { useTitleStore } from '@/stores/useTitleStore';
 import Avatar from './avatar';
-import CoverImage from './cover-image';
 import DateFormatter from './date-formatter';
 import { PostTitle } from '@/app/_components/post-title';
 import { type Author } from '@/interfaces/author';
 import { useEffect } from 'react';
+import Thumbnail from './thumbnail';
 
 type Props = {
   title: string;
@@ -15,7 +15,7 @@ type Props = {
   author: Author;
 };
 
-export function PostHeader({ title, coverImage, date, author }: Props) {
+export function PostHeader({ title, date, author }: Props) {
   const { setTitle } = useTitleStore.getState();
   useEffect(() => {
     setTitle(title);
@@ -32,11 +32,7 @@ export function PostHeader({ title, coverImage, date, author }: Props) {
         </div>
       </div>
       <div className='mb-16 md:mb-16 sm:mx-0'>
-        <CoverImage
-          title={title}
-          src={coverImage}
-          imageClassName='max-w-[600px] mx-auto'
-        />
+        <Thumbnail title={title} className='max-w-[600px] mx-auto' />
       </div>
       <div className='max-w-full mx-auto'>
         <div className='block md:hidden mb-6'>
