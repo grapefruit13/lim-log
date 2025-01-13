@@ -26,8 +26,8 @@ const ProjectCard = ({
   color,
 }: Props) => {
   return (
-    <div className='flex items-center justify-stretch gap-6 border w-full max-w-[400px] hover:border-slate-600 dark:hover:border-slate-400 dark:border-slate-600 border-slate-400 rounded px-4 py-6'>
-      <Image src={logoSrc} width={44} height={44} alt='logo' />
+    <div className='flex h-32 items-center justify-stretch gap-6 border w-full max-w-[400px] hover:border-slate-600 dark:hover:border-slate-400 dark:border-slate-600 border-slate-400 rounded px-4 py-6'>
+      <Image src={logoSrc} className='rounded' width={44} height={44} alt='logo' />
       <div className='flex flex-col items-start justify-start gap-3 flex-grow'>
         <h3>{name}</h3>
         <p className={classNames(notoSans.className, 'text-sm')}>{description}</p>
