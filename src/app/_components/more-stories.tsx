@@ -9,7 +9,7 @@ type Props = {
 export function MoreStories({ posts }: Props) {
   return (
     <section>
-      <h2 className='mb-8 text-5xl md:text-7xl font-bold tracking-tighter leading-tight'>
+      <h2 className='mb-8 text-4xl md:text-6xl font-bold tracking-tighter leading-tight'>
         More stories
       </h2>
       <div className='flex flex-col gap-2 mb-32'>

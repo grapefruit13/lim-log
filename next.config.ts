@@ -23,7 +23,9 @@ const nextConfig: NextConfig = withMDX({
         protocol: 'http',
         hostname: '**',
       },
+      { protocol: 'https', hostname: 'cdn.simpleicons.org' },
     ],
+    dangerouslyAllowSVG: true,
   },
   pageExtensions: ['ts', 'tsx', 'mdx'],
 });
