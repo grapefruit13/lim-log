@@ -101,10 +101,7 @@ export default function Index() {
           <div className='flex gap-4 w-full flex-wrap'>
             {ICON_LINKS.map((item, idx) => {
               return (
-                <div
-                  className='tech-stack-wrapper hover:scale-110 transition-transform'
-                  key={`${idx}-${item}`}
-                >
+                <div className='tech-stack-wrapper' key={`${idx}-${item}`}>
                   <Image src={item} width={ICON_SIZE} height={ICON_SIZE} alt='logo' />
                 </div>
               );

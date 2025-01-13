@@ -31,4 +31,12 @@ export const PROJECTS = [
     'https://lim-log.vercel.app/',
     '#0f172a',
   ],
+  [
+    'TickyTocky',
+    'Team task and schedule management service',
+    '/assets/portfolio/tickytocky-logo.png',
+    'https://github.com/TickyTocky/TickyTocky',
+    'https://ticky-tocky.vercel.app/',
+    '#37E8B4',
+  ],
 ];
