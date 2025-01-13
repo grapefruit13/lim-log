@@ -1,8 +1,5 @@
 import type { Metadata } from 'next';
-import {
-  Inter,
-  // Noto_Sans_KR
-} from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 import cn from 'classnames';
@@ -13,7 +10,6 @@ import Script from 'next/script';
 import { METADATA } from '@/constants/_meatadata';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
-// const notoSansKR = Noto_Sans_KR({ subsets: ['latin'] });
 const isProduction = process.env.NODE_ENV === 'production';
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 const { title, description, keywords, url, images } = METADATA;
@@ -29,24 +25,6 @@ export const metadata: Metadata = {
     images,
   },
 };
-
-// export const metadata: Metadata = {
-//   title,
-//   description,
-//   keywords,
-//   openGraph: {
-//     title,
-//     description,
-//     url,
-//     images,
-//   },
-//   twitter: {
-//     card: 'summary_large_image',
-//     title,
-//     description,
-//     images: [images[0].url],
-//   },
-// };
 
 export default function RootLayout({
   children,
@@ -100,7 +78,6 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          // notoSansKR.className,
           'dark:bg-slate-800 bg-neutral-50 dark:text-slate-100 w-full'
         )}
       >
