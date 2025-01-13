@@ -13,7 +13,7 @@ export function PostPreview({ title, date, excerpt, slug }: Props) {
   return (
     <div className='py-4 border-b border-gray-200 transition-colors duration-300'>
       <h3 className='text-xl font-bold mb-1 leading-snug hover:underline'>
-        <Link href={`/posts/${slug}`} className='dark:text-neutral-100'>
+        <Link href={`/blog/${slug}`} className='dark:text-neutral-100'>
           {title}
         </Link>
       </h3>

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Noto_Sans, Poppins } from 'next/font/google';
 import ProjectCard from './_components/portfolio/project-card';
+import { PROJECTS } from '@/constants/_projects';
 
 const notoSans = Noto_Sans({ subsets: ['latin'], weight: ['400'] });
 const poppins = Poppins({ subsets: ['latin'], weight: ['700'] });
@@ -115,14 +116,17 @@ export default function Index() {
             <h4>Projects</h4>
           </div>
           <div className='flex flex-wrap gap-6 w-full'>
-            <ProjectCard
-              name='NNplanner'
-              description='Planning and Management Service for Nutritionists'
-              logoSrc='/assets/portfolio/nnplanner-logo.png'
-              gitSrc='https://github.com/devping-kr/NNplanner-FE'
-              projectUrl='https://nnplanner.com'
-              color='#00A86B'
-            />
+            {PROJECTS.map((item, idx) => (
+              <ProjectCard
+                key={`${item}-${idx}`}
+                name={item[0]}
+                description={item[1]}
+                logoSrc={item[2]}
+                gitSrc={item[3]}
+                projectUrl={item[4]}
+                color={item[5]}
+              />
+            ))}
           </div>
         </article>
       </section>

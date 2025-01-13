@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .tech-stack-wrapper {
-  @apply dark:bg-slate-700 bg-slate-300 hover:scale-110 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full p-4 transition-all;
+  @apply dark:bg-slate-700 bg-slate-200 hover:scale-110 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full p-4 transition-all;
   --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
 }
