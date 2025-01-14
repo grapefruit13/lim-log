@@ -1,19 +1,21 @@
 import Image from 'next/image';
 
+const WIDTH = 600;
+const HEIGHT = 400;
+
 interface ThumbnailProps {
-  title: string;
-  url?: string;
-  className?: string;
+  coverImage: string;
 }
 
-const Thumbnail = ({ title, className }: ThumbnailProps) => {
+const Thumbnail = ({ coverImage }: ThumbnailProps) => {
   return (
     <Image
-      src={`/api/og?title=${title}}`}
-      className={className}
-      width={1800}
-      height={600}
-      alt='thumbnail'
+      src={coverImage || '/assets/blog/thumbnail/blue-gradient.jpg'}
+      width={WIDTH}
+      height={HEIGHT}
+      alt='post-cover-image'
+      aria-label='post-cover-image'
+      className={`max-w-[${WIDTH}px] max-h-[${HEIGHT}px] overflow-hidden mx-auto rounded-xl`}
     />
   );
 };

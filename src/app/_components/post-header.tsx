@@ -15,7 +15,7 @@ type Props = {
   author: Author;
 };
 
-export function PostHeader({ title, date, author }: Props) {
+export function PostHeader({ title, date, author, coverImage }: Props) {
   const { setTitle } = useTitleStore.getState();
   useEffect(() => {
     setTitle(title);
@@ -32,7 +32,7 @@ export function PostHeader({ title, date, author }: Props) {
         </div>
       </div>
       <div className='mb-16 md:mb-16 sm:mx-0'>
-        <Thumbnail title={title} className='max-w-[600px] mx-auto' />
+        <Thumbnail coverImage={coverImage} />
       </div>
       <div className='max-w-full mx-auto'>
         <div className='block md:hidden mb-6'>

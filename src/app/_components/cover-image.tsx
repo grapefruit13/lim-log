@@ -1,6 +1,9 @@
 import cn from 'classnames';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ROUTES } from '@/constants/_routes';
+
+const { blog } = ROUTES;
 
 type Props = {
   title: string;
@@ -28,7 +31,7 @@ const CoverImage = ({ title, src, slug, imageClassName }: Props) => {
   return (
     <div className='sm:mx-0'>
       {slug ? (
-        <Link href={`/blog/${slug}`} aria-label={title}>
+        <Link href={`${blog}/${slug}`} aria-label={title}>
           {image}
         </Link>
       ) : (

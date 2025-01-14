@@ -3,6 +3,9 @@ import CoverImage from '@/app/_components/cover-image';
 import { type Author } from '@/interfaces/author';
 import Link from 'next/link';
 import DateFormatter from './date-formatter';
+import { ROUTES } from '@/constants/_routes';
+
+const { blog } = ROUTES;
 
 type Props = {
   title: string;
@@ -28,7 +31,7 @@ export function HeroPost({ title, coverImage, date, excerpt, author, slug }: Pro
       <div className='md:grid md:grid-cols-2 md:gap-x-8 lg:gap-x-8 mb-20 md:mb-28'>
         <div>
           <h3 className='mb-4 text-4xl lg:text-5xl leading-tight'>
-            <Link href={`/blog/${slug}`} className='hover:underline'>
+            <Link href={`${blog}/${slug}`} className='hover:underline'>
               {title}
             </Link>
           </h3>

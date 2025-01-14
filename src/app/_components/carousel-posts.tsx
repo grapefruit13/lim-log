@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ROUTES } from '@/constants/_routes';
 
 const SLIDE_INTERVAL = 5000;
+const { blog } = ROUTES;
 
 interface CarouselPostsProps {
   posts: {
@@ -40,7 +43,10 @@ export default function CarouselPosts({ posts }: CarouselPostsProps) {
       >
         {posts.map((post) => (
           <div key={post.slug} className='w-full flex-shrink-0'>
-            <div className='relative w-full h-[400px] overflow-hidden shadow-lg'>
+            <Link
+              href={`${blog}/${post.slug}`}
+              className='relative w-full h-[400px] overflow-hidden shadow-lg'
+            >
               <Image
                 src={post.coverImage}
                 alt={post.title}
@@ -53,7 +59,7 @@ export default function CarouselPosts({ posts }: CarouselPostsProps) {
               <div className='absolute bottom-0 left-0 p-4  w-full'>
                 <h3 className='text-neutral-100 font-bold text-xl pb-5'>{post.title}</h3>
               </div>
-            </div>
+            </Link>
           </div>
         ))}
       </div>
