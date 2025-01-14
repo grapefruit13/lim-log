@@ -1,6 +1,7 @@
 'use client';
 
 import ThemeSwitcher from '@/app/_components/theme-switcher';
+import { ROUTES } from '@/constants/_routes';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useTitleStore } from '@/stores/useTitleStore';
 import cn from 'classnames';
@@ -12,10 +13,11 @@ import { useEffect, useRef, useState } from 'react';
 
 const HEADER_HEIGHT = 120;
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
+const { home, blog } = ROUTES;
 
 const Header = () => {
   const pathname = usePathname();
-  const enableScrollEvent = pathname !== '/blog' && pathname !== '/';
+  const enableScrollEvent = pathname !== blog && pathname !== home;
   const { title } = useTitleStore();
   const { mode } = useThemeStore();
   const [resolvedMode, setResolvedMode] = useState<'dark' | 'light'>('light');
@@ -69,12 +71,12 @@ const Header = () => {
       >
         <div className='flex items-center justify-center gap-4'>
           <h3 className='text-2xl md:text-3xl font-bold tracking-tight md:tracking-tighter leading-tight'>
-            <Link className='hover:underline' href='/blog'>
+            <Link className='hover:underline' href={blog}>
               Blog.
             </Link>
           </h3>
           <h3 className='text-2xl md:text-3xl font-bold tracking-tight md:tracking-tighter leading-tight'>
-            <Link className='hover:underline' href='/'>
+            <Link className='hover:underline' href={home}>
               Portfolio.
             </Link>
           </h3>
