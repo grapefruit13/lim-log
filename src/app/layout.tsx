@@ -78,7 +78,7 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          'dark:bg-slate-800 bg-neutral-100 dark:text-slate-100 w-full'
+          'dark:bg-slate-800 bg-neutral-50 dark:text-slate-100 w-full'
         )}
       >
         <Header />
