@@ -55,14 +55,17 @@ export const MDXComponents = {
         </div>
         {/* 코드 블럭 */}
         <pre
-          className='bg-neutral-200 dark:bg-slate-700 text-slate-900 dark:text-gray-100 rounded px-3 py-3 pt-10 text-wrap text-sm overflow-x-auto'
+          className='bg-neutral-100 dark:bg-slate-700 text-slate-950 dark:text-gray-100 rounded px-3 py-3 pt-10 text-wrap text-sm overflow-x-auto shadow-md border border-slate-700 dark:border-neutral-50'
           {...props}
         />
       </div>
     );
   },
   code: (props: React.HTMLProps<HTMLElement>) => (
-    <code className='bg-gray-900 text-gray-100 rounded px-1 py-0.5' {...props} />
+    <code
+      className='bg-slate-800 dark:bg-slate-900 text-gray-100 rounded px-2 py-[2px] whitespace-nowrap'
+      {...props}
+    />
   ),
   img: (props: React.HTMLProps<HTMLImageElement>) => {
     const { src, alt, width, height } = props;
@@ -92,11 +95,14 @@ export const MDXComponents = {
   ),
   // quote style
   blockquote: (props: React.HTMLProps<HTMLQuoteElement>) => (
-    <blockquote className='my-4 rounded px-4 py-2 dark:bg-slate-950' {...props} />
+    <blockquote
+      className='my-4 rounded px-4 py-2 dark:bg-slate-950 bg-slate-300 bg-opacity-40'
+      {...props}
+    />
   ),
-  li: (props: React.HTMLProps<HTMLLIElement>) => <li className='' {...props} />,
+  li: (props: React.HTMLProps<HTMLLIElement>) => <li className='custom-li' {...props} />,
   ul: (props: React.HTMLProps<HTMLUListElement>) => (
-    <ul className='my-6 ml-6 pr-3 last-of-type:list-disc' {...props} />
+    <ul className='my-6 ml-6 pr-3 last-of-type:list-disc custom-ul' {...props} />
   ),
   ol: (
     props: React.HTMLProps<HTMLOListElement> & { type?: '1' | 'a' | 'i' | 'A' | 'I' }
